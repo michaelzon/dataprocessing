@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# Name:
-# Student number:
+# Name: Michael Zonneveld
+# Student number: 11302984
 """
 This script scrapes IMDB and outputs a CSV file with highest rated tv series.
 """
@@ -10,12 +10,10 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-import re
 
 TARGET_URL = "http://www.imdb.com/search/title?num_votes=5000,&sort=user_rating,desc&start=1&title_type=tv_series"
 BACKUP_HTML = 'tvseries.html'
 OUTPUT_CSV = 'tvseries.csv'
-
 
 def extract_tvseries(dom):
     """
@@ -29,42 +27,35 @@ def extract_tvseries(dom):
     """
 
     serie_info = dom.find_all("div", {"class":"lister-item-content"})
-    serie_title = dom.find_all("h3", {"class":"lister-item-header"})
-    serie_rating = dom.find_all("div", {"class":"ratings-bar"})
-    serie_genre = dom.find_all("span", {"class":"genre"})
-    serie_stars = dom.find_all(class_="", href = re.compile("name"))
-    serie_runtime = dom.find_all("span", {"class":"runtime"})
-
     series = []
 
-    for item in serie_info:
-        # titel
-        print(item.h3.a.text)
+    # Indexing every serie_info section
+    for i in range(len(serie_info)):
 
-    for rating in serie_rating:
-        # rating
-        print(rating.strong.text)
+        # For every serie all the info is stored in the list 'serie_info'
+        serie_info = []
 
-    for genre in serie_genre:
-        print(genre.text.replace("\n",""))
+        # Extracting all the info from IMDB
+        serie_title = dom.find_all("h3", {"class":"lister-item-header"})[i]
+        serie_info.append(serie_title.a.text)
 
-    star_list = []
-    for stars in serie_stars:
-        star_list.append(stars.text)
-    print(star_list[4:])
+        serie_rating = dom.find_all("div", {"class":"ratings-bar"})[i]
+        serie_info.append(serie_rating.strong.text)
 
-    for runtime in serie_runtime:
-        print(runtime.text.replace("min", ""))
+        serie_genre = dom.find_all("span", {"class":"genre"})[i]
+        serie_info.append(serie_genre.text.strip().replace("\n",""))
 
-    serie_stars = ", ".join(star_list)
+        serie_stars = dom.find_all("div", {"class":"lister-item-content"})[i]
+        serie_stars = serie_stars.contents[9].text
+        serie_info.append(serie_stars.strip().replace("\n","").replace("Stars:",""))
 
-    series.extend([serie_title, serie_rating, serie_genre, serie_stars, serie_runtime])
+        serie_runtime = dom.find_all("span", {"class":"runtime"})[i]
+        serie_info.append(serie_runtime.text.replace("min","").replace(" ",""))
 
-    series_list = []
-    series_list.append(series)
+        # All the information from al the series are stored in list 'series'
+        series.append(serie_info)
 
-    return ['title']   # REPLACE THIS LINE AS WELL AS APPROPRIATE
-
+    return series
 
 def save_csv(outfile, tvseries):
     """
@@ -73,8 +64,9 @@ def save_csv(outfile, tvseries):
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Genre', 'Actors', 'Runtime'])
 
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE TV-SERIES TO DISK
-
+    # Write serie information on seperate rows
+    for serie in tvseries:
+        writer.writerow(serie)
 
 def simple_get(url):
     """
