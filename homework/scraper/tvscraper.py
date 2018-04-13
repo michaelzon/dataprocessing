@@ -91,20 +91,20 @@ def is_good_response(resp):
 
 if __name__ == "__main__":
 
-    # get HTML content at target URL
+    # Get HTML content at target URL
     html = simple_get(TARGET_URL)
 
-    # save a copy to disk in the current directory, this serves as an backup
-    # of the original HTML, will be used in grading.
+    # Save a copy to disk in the current directory, this serves as an backup
+    # Of the original HTML, will be used in grading.
     with open(BACKUP_HTML, 'wb') as f:
         f.write(html)
 
-    # parse the HTML file into a DOM representation
+    # Parse the HTML file into a DOM representation
     dom = BeautifulSoup(html, 'html.parser')
 
-    # extract the tv series (using the function you implemented)
+    # Extract the tv series (using the function you implemented)
     tvseries = extract_tvseries(dom)
 
-    # write the CSV file to disk (including a header)
+    # Write the CSV file to disk (including a header)
     with open(OUTPUT_CSV, 'w', newline='') as output_file:
         save_csv(output_file, tvseries)
