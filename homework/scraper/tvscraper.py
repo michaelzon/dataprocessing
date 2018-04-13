@@ -17,19 +17,13 @@ OUTPUT_CSV = 'tvseries.csv'
 
 def extract_tvseries(dom):
     """
-    Extract a list of highest rated TV series from DOM (of IMDB page).
-    Each TV series entry should contain the following fields:
-    - TV Title
-    - Rating
-    - Genres (comma separated if more than one)
-    - Actors/actresses (comma separated if more than one)
-    - Runtime (only a number!)
+    Extracts a list of highest rated TV series from DOM (of IMDB page).
     """
 
     serie_info = dom.find_all("div", {"class":"lister-item-content"})
     series = []
 
-    # Indexing every serie_info section
+    # Indexing every serie information section
     for i in range(len(serie_info)):
 
         # For every serie all the info is stored in the list 'serie_info'
