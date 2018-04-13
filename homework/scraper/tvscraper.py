@@ -30,13 +30,7 @@ def extract_tvseries(dom):
 
     serie_info = dom.find_all("div", {"class":"lister-item-content"})
     serie_title = dom.find_all("h3", {"class":"lister-item-header"})
-
-
-    # serie_rating = dom.find_all("strong",{"class":"ratings-bar"})
-    # serie_rating = dom.find_all("strong", {"class":"lister-item-header"})
     serie_rating = dom.find_all("div", {"class":"ratings-bar"})
-
-
     serie_genre = dom.find_all("span", {"class":"genre"})
     serie_stars = dom.find_all(class_="", href = re.compile("name"))
     serie_runtime = dom.find_all("span", {"class":"runtime"})
