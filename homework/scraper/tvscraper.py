@@ -25,6 +25,8 @@ def extract_tvseries(dom):
 
     # Indexing every serie information section
     for i in range(len(serie_info)):
+    # beter was geweest:
+    # for serie in serie_info;
 
         # For every serie all the info is stored in the list 'serie_info'
         serie_info = []
