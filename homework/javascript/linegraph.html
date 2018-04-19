@@ -1,6 +1,6 @@
 <title> Avarage temprature in De Bilt(NL)</title>
 <head>
-<header style="text-align:center;font-family:comic sans ms;"> Avarage temprature in De Bilt (NL) </header>
+<header style="text-align:center;font-family:monaco;"> Avarage temprature in De Bilt (NL) </header>
 </head>
 <body>
 <canvas id="chart" width="800" height="600"></canvas>
@@ -388,12 +388,10 @@
   {
     // divide elements by the comma
     var dateTemp = lines[i].split(",");
-
     var year = dateTemp[0].slice(0,4);
 
     // first month of the year starts at zero so minus one
     var month = dateTemp[0].slice(4,6) -1;
-
     var day = dateTemp[0].slice(6);
 
     // getting the right format for date and convert it to the date list
@@ -403,53 +401,31 @@
     // inserting all the tempratures in tempraturelist as a number
     var temp = Number(dateTemp[1]);
     tempList.push(temp)
-    // console.log(date)
-    // console.log(temp)
-
-  }
-
-  function createTransform(domain, range){
-	// domain is a two-element array of the data bounds [domain_min, domain_max]
-	// range is a two-element array of the screen bounds [range_min, range_max]
-	// this gives you two equations to solve:
-	// range_min = alpha * domain_min + beta
-	// range_max = alpha * domain_max + beta
- 		// a solution would be:
-
-    var domain_min = domain[0]
-    var domain_max = domain[1]
-    var range_min = range[0]
-    var range_max = range[1]
-
-    // formulas to calculate the alpha and the beta
-   	var alpha = (range_max - range_min) / (domain_max - domain_min)
-    var beta = range_max - alpha * domain_max
-
-    // returns the function for the linear transformation (y= a * x + b)
-    return function(x){
-      return alpha * x + beta;
-    }
   }
 
   var canvas = document.getElementById('chart');
   var ctx = canvas.getContext('2d');
 
-  celcius = ['35', '30', '25', '20', '15', '10', '5', '0', '-5', '-10']
-  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-            'Augustus', 'September', 'October', 'November', 'December']
+  celcius = ['35C', '30C', '25C', '20C', '15C', '10C', '5C', '0C',
+   '-5C', '-10C', '-15C']
+
+  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+            'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
   // y-as
-  var x = 10;
+  var x = 20;
   var y = 0;
   var xDistance = 10;
   var yDistance = 40;
 
-  for(let i = 0; i < celcius.length; i++)
+  for(let i = 0; i < celcius.length-1; i++)
   {
     ctx.beginPath();
     ctx.moveTo(x, y);
     x += xDistance;
     ctx.lineTo(x, y);
+    ctx.font = '10px monaco';
+    ctx.fillText(celcius[i], x-30, y-2);
     ctx.moveTo(x, y);
     y += yDistance;
     ctx.lineTo(x, y);
@@ -459,11 +435,11 @@
     ctx.lineTo(x, y);
     ctx.stroke();
     // setting x at ten otherwise the line for y-as wouldn't be straight
-    x = 10
+    x = 20
   }
 
   // x-as
-  var newX = 30;
+  var newX = 40;
   var newY = 410;
   var newXDistance = 60;
   var newYDistance = 10;
@@ -474,6 +450,9 @@
     ctx.moveTo(newX, newY);
     newY -= newYDistance;
     ctx.lineTo(newX, newY);
+    ctx.font = '10px monaco';
+    ctx.fillText(months[i], newX, newY);
+    ctx.textAlign = 'end'
     newX += newXDistance;
     ctx.lineTo(newX, newY);
     newY += newYDistance;
@@ -484,7 +463,31 @@
     newY = 410;
   }
 
+  ctx.font = '10px monaco';
+  ctx.fillText(celcius[0], 0.7, 10);
+  ctx.fillText(celcius[10], 0.7, 400);
 
+  var xAxisLength = 660;
+  var yAxisLength = 400;
+
+  var yZero = (yAxisLength) - 3 * yDistance;
+  console.log(yZero)
+
+  // find starting point of linegraph at January 1 and 1.9 degrees Celsius
+  // calculating how many pixels fit in 5 degrees
+  var startingPoint = [40, yZero - (tempList[0] * (xDistance / 5))];
+  console.log(startingPoint)
+
+  // starting at 1 because at that point is the first temprature
+  for (let i = 1; i <= 366; i++)
+  {
+    nextPoint = [startingPoint[0] + (xAxisLength * (1 / 366)), yZero - (tempList[i] * (xDistance / 5))];
+    ctx.beginPath()
+    ctx.moveTo(startingPoint[0], startingPoint[1]);
+    ctx.lineTo(nextPoint[0], nextPoint[1]);
+    ctx.stroke();
+    startingPoint = nextPoint;
+  }
 
 </script>
 </body>
