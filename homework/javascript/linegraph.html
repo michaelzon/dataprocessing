@@ -389,19 +389,19 @@
     // divide elements by the comma
     var dateTemp = lines[i].split(",");
 
-    var year = dateTemp[0].slice(0,4)
+    var year = dateTemp[0].slice(0,4);
 
     // first month of the year starts at zero so minus one
-    var month = dateTemp[0].slice(4,6) -1
+    var month = dateTemp[0].slice(4,6) -1;
 
-    var day = dateTemp[0].slice(6)
+    var day = dateTemp[0].slice(6);
 
     // getting the right format for date and convert it to the date list
-    var date = new Date(year, month, day)
+    var date = new Date(year, month, day);
     dateList.push(date)
 
     // inserting all the tempratures in tempraturelist as a number
-    var temp = Number(dateTemp[1])
+    var temp = Number(dateTemp[1]);
     tempList.push(temp)
     // console.log(date)
     // console.log(temp)
@@ -431,8 +431,6 @@
     }
   }
 
-  // dit is van mij:
-
   var canvas = document.getElementById('chart');
   var ctx = canvas.getContext('2d');
 
@@ -440,7 +438,7 @@
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
             'Augustus', 'September', 'October', 'November', 'December']
 
-
+  // y-as
   var x = 10;
   var y = 0;
   var xDistance = 10;
@@ -464,6 +462,7 @@
     x = 10
   }
 
+  // x-as
   var newX = 30;
   var newY = 410;
   var newXDistance = 60;
@@ -471,7 +470,6 @@
 
   for(let i = 0; i < months.length-1; i++)
   {
-
     ctx.beginPath();
     ctx.moveTo(newX, newY);
     newY -= newYDistance;
@@ -482,12 +480,11 @@
     ctx.lineTo(newX, newY);
     newY -= newYDistance;
     ctx.moveTo(newX, newY);
-    console.log(newX);
-    console.log(newY);
     ctx.stroke();
     newY = 410;
-
   }
+
+
 
 </script>
 </body>
