@@ -1,5 +1,10 @@
-<canvas id="chart"> </canvas>
-<textarea id="rawdata">
+<title> Avarage temprature in De Bilt(NL)</title>
+<head>
+<header style="text-align:center;font-family:comic sans ms;"> Avarage temprature in De Bilt (NL) </header>
+</head>
+<body>
+<canvas id="chart" width="800" height="600"></canvas>
+<textarea id="rawdata" style="visibility:hidden;">
 #data,avgtemp
 20080101,   19
 20080102,   -6
@@ -389,25 +394,19 @@
     // first month of the year starts at zero so minus one
     var month = dateTemp[0].slice(4,6) -1
 
-    var day = (dateTemp[0].slice(6))
+    var day = dateTemp[0].slice(6)
 
     // getting the right format for date and convert it to the date list
     var date = new Date(year, month, day)
     dateList.push(date)
 
-    //
+    // inserting all the tempratures in tempraturelist as a number
     var temp = Number(dateTemp[1])
     tempList.push(temp)
-    console.log(date)
-    console.log(temp)
+    // console.log(date)
+    // console.log(temp)
 
   }
-
-  var canvas = document.getElementById('chart');
-  var ctx = canvas.getContext('2d');
-
-  ctx.fillStyle = 'rgb(0,0,77)';
-  ctx.fillRect(10, 10, 55, 50);
 
   function createTransform(domain, range){
 	// domain is a two-element array of the data bounds [domain_min, domain_max]
@@ -430,6 +429,65 @@
     return function(x){
       return alpha * x + beta;
     }
-}
+  }
+
+  // dit is van mij:
+
+  var canvas = document.getElementById('chart');
+  var ctx = canvas.getContext('2d');
+
+  celcius = ['35', '30', '25', '20', '15', '10', '5', '0', '-5', '-10']
+  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+            'Augustus', 'September', 'October', 'November', 'December']
+
+
+  var x = 10;
+  var y = 0;
+  var xDistance = 10;
+  var yDistance = 40;
+
+  for(let i = 0; i < celcius.length; i++)
+  {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    x += xDistance;
+    ctx.lineTo(x, y);
+    ctx.moveTo(x, y);
+    y += yDistance;
+    ctx.lineTo(x, y);
+    x -= xDistance;
+    ctx.moveTo(x, y);
+    x += xDistance;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    // setting x at ten otherwise the line for y-as wouldn't be straight
+    x = 10
+  }
+
+  var newX = 30;
+  var newY = 410;
+  var newXDistance = 60;
+  var newYDistance = 10;
+
+  for(let i = 0; i < months.length-1; i++)
+  {
+
+    ctx.beginPath();
+    ctx.moveTo(newX, newY);
+    newY -= newYDistance;
+    ctx.lineTo(newX, newY);
+    newX += newXDistance;
+    ctx.lineTo(newX, newY);
+    newY += newYDistance;
+    ctx.lineTo(newX, newY);
+    newY -= newYDistance;
+    ctx.moveTo(newX, newY);
+    console.log(newX);
+    console.log(newY);
+    ctx.stroke();
+    newY = 410;
+
+  }
 
 </script>
+</body>
