@@ -376,6 +376,7 @@
 
   // access all the text in the webpage
   var rawdata = document.getElementById("rawdata").innerHTML.split("\n")
+  this.responseText.split("\n")
 
   // slicing of the words 'data' and 'avgtemp'
   var lines = rawdata.slice(1)
@@ -489,5 +490,11 @@
     startingPoint = nextPoint;
   }
 
+  var request = new XMLHttpRequest()
+  var getgitit =
+
+  requester.addEventListener("load", reqListener);
+  requester.open("GET", getgitit)
+  requester.send()
 </script>
 </body>
