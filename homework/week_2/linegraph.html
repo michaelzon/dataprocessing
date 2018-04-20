@@ -1,9 +1,9 @@
 <title> Avarage temprature in De Bilt(NL)</title>
 <head>
-<header style="text-align:center;font-family:monaco;"> Avarage temprature in De Bilt (NL) </header>
+<header style="text-align:center;font-family:helvetica;"> Avarage temprature in De Bilt (NL) </header>
 </head>
 <body>
-<canvas id="chart" width="800" height="600"></canvas>
+<canvas id="chart" width="800" height="700"></canvas>
 
 <script>
 
@@ -61,7 +61,7 @@ function reqListener()
     ctx.moveTo(x, y);
     x += xDistance;
     ctx.lineTo(x, y);
-    ctx.font = '10px monaco';
+    ctx.font = '10px helvetica';
     ctx.fillText(celcius[i], x-30, y-2);
     ctx.moveTo(x, y);
     y += yDistance;
@@ -81,13 +81,13 @@ function reqListener()
   var newXDistance = 60;
   var newYDistance = 10;
 
-  for(let i = 0; i < months.length-1; i++)
+  for(let i = 0; i < months.length; i++)
   {
     ctx.beginPath();
     ctx.moveTo(newX, newY);
     newY -= newYDistance;
     ctx.lineTo(newX, newY);
-    ctx.font = '10px monaco';
+    ctx.font = '10px helvetica';
     ctx.fillText(months[i], newX, newY+25);
     ctx.textAlign = 'end'
     newX += newXDistance;
@@ -99,6 +99,7 @@ function reqListener()
     ctx.stroke();
     // setting y at 410 otherwise the line for x-as wouldn't be straight
     newY = 410;
+    // maak nog een break statement
   }
 
   // ctx.font = '10px monaco';
