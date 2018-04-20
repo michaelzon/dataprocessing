@@ -374,9 +374,13 @@
 20081231,  -56 </textarea>
 <script>
 
+function(reqListener)
+{
+
+
   // access all the text in the webpage
   var rawdata = document.getElementById("rawdata").innerHTML.split("\n")
-  this.responseText.split("\n")
+  var rawdata this.responseText.split("\n")
 
   // slicing of the words 'data' and 'avgtemp'
   var lines = rawdata.slice(1)
@@ -489,12 +493,14 @@
     ctx.stroke();
     startingPoint = nextPoint;
   }
+}
 
   var request = new XMLHttpRequest()
-  var getgitit =
+  var getgitit = "https://michaelzon.github.io/dataprocessing/homework/javascript/rawdata.txt"
 
   requester.addEventListener("load", reqListener);
   requester.open("GET", getgitit)
   requester.send()
+
 </script>
 </body>
