@@ -1,0 +1,139 @@
+<title> Avarage temprature in De Bilt(NL)</title>
+<head>
+<header style="text-align:center;font-family:monaco;"> Avarage temprature in De Bilt (NL) </header>
+</head>
+<body>
+<canvas id="chart" width="800" height="600"></canvas>
+
+<script>
+
+function reqListener()
+{
+
+  // access all the text in the webpage
+  // var rawdata = document.getElementById("rawdata").innerHTML.split("\n")
+  var rawdata = this.responseText.split("\n");
+
+  // slicing of the words 'data' and 'avgtemp'
+  var lines = rawdata.slice(1)
+
+  var dateList = []
+  var tempList = []
+
+  // taking all correct elements for year, month and day
+  for(let i = 0; i <= lines.length-1; i++)
+  {
+    // divide elements by the comma
+    var dateTemp = lines[i].split(",");
+    var year = dateTemp[0].slice(0,4);
+
+    // first month of the year starts at zero so minus one
+    var month = dateTemp[0].slice(4,6) -1;
+    var day = dateTemp[0].slice(6);
+
+    // getting the right format for date and convert it to the date list
+    var date = new Date(year, month, day);
+    dateList.push(date)
+
+    // inserting all the tempratures in tempraturelist as a number
+    var temp = Number(dateTemp[1]);
+    tempList.push(temp)
+  }
+
+  var canvas = document.getElementById('chart');
+  var ctx = canvas.getContext('2d');
+
+  celcius = ['35C', '30C', '25C', '20C', '15C', '10C', '5C', '0C',
+   '-5C', '-10C', '-15C']
+
+  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+            'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+  // y-as
+  var x = 20;
+  var y = 0;
+  var xDistance = 10;
+  var yDistance = 40;
+
+  for(let i = 0; i < celcius.length-1; i++)
+  {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    x += xDistance;
+    ctx.lineTo(x, y);
+    ctx.font = '10px monaco';
+    ctx.fillText(celcius[i], x-30, y-2);
+    ctx.moveTo(x, y);
+    y += yDistance;
+    ctx.lineTo(x, y);
+    x -= xDistance;
+    ctx.moveTo(x, y);
+    x += xDistance;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    // setting x at 20 otherwise the line for y-as wouldn't be straight
+    x = 20
+  }
+
+  // x-as
+  var newX = 40;
+  var newY = 410;
+  var newXDistance = 60;
+  var newYDistance = 10;
+
+  for(let i = 0; i < months.length-1; i++)
+  {
+    ctx.beginPath();
+    ctx.moveTo(newX, newY);
+    newY -= newYDistance;
+    ctx.lineTo(newX, newY);
+    ctx.font = '10px monaco';
+    ctx.fillText(months[i], newX, newY+25);
+    ctx.textAlign = 'end'
+    newX += newXDistance;
+    ctx.lineTo(newX, newY);
+    newY += newYDistance;
+    ctx.lineTo(newX, newY);
+    newY -= newYDistance;
+    ctx.moveTo(newX, newY);
+    ctx.stroke();
+    // setting y at 410 otherwise the line for x-as wouldn't be straight
+    newY = 410;
+  }
+
+  // ctx.font = '10px monaco';
+  // ctx.fillText(celcius[0], 0.7, 10);
+  // ctx.fillText(celcius[10], 0.7, 400);
+
+  var xAxisLength = 660;
+  var yAxisLength = 400;
+
+  var yZero = (yAxisLength) - 3 * yDistance;
+  console.log(yZero)
+
+  // find starting point of linegraph at January 1 and 1.9 degrees Celsius
+  // calculating how many pixels fit in 5 degrees
+  var startingPoint = [40, yZero - (tempList[0] * (xDistance / 50))];
+  console.log(startingPoint)
+
+  // starting at 1 because at that point is the first temprature
+  for (let i = 1; i <= 366; i++)
+  {
+    nextPoint = [startingPoint[0] + (xAxisLength * (1 / 366)), yZero - (tempList[i] * (xDistance / 5))];
+    ctx.beginPath()
+    ctx.moveTo(startingPoint[0], startingPoint[1]);
+    ctx.lineTo(nextPoint[0], nextPoint[1]);
+    ctx.stroke();
+    startingPoint = nextPoint;
+  }
+}
+
+  var requester = new XMLHttpRequest()
+  var getgitit = "https://michaelzon.github.io/dataprocessing/homework/week_2/rawdata.txt"
+
+  requester.addEventListener("load", reqListener);
+  requester.open("GET", getgitit)
+  requester.send()
+
+</script>
+</body>
