@@ -1,17 +1,25 @@
-<title> Avarage temprature in De Bilt(NL)</title>
+<title> Avarage temperature in De Bilt(NL)</title>
 <head>
-<header style="text-align:center;font-family:helvetica;"> Avarage temprature in De Bilt (NL) </header>
+<header style="text-align:center;font-family:helvetica;font-size:200%;"> Avarage temperature in De Bilt (NL) 2008. </header>
 </head>
+<p1 style="text-align:right; font-family: helvetica"> Name: Michael Zonneveld </p1>
+</br>
+<p2 style="font-family: helvetica"> Studentnummer: 11302984 </p2>
+</br>
+<p3 style="font-family: helvetica"> Assignment: Linegraph  </p3>
+</br>
+<a href = http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi style="font-family: helvetica"> Source (KNMI)</a>
+</br>
+</br>
+</br>
 <body>
 <canvas id="chart" width="800" height="700"></canvas>
-
 <script>
 
 function reqListener()
 {
 
-  // access all the text in the webpage
-  // var rawdata = document.getElementById("rawdata").innerHTML.split("\n")
+  // access wheater data and split on a new line
   var rawdata = this.responseText.split("\n");
 
   // slicing of the words 'data' and 'avgtemp'
@@ -25,6 +33,8 @@ function reqListener()
   {
     // divide elements by the comma
     var dateTemp = lines[i].split(",");
+
+    // slicing for year
     var year = dateTemp[0].slice(0,4);
 
     // first month of the year starts at zero so minus one
@@ -55,7 +65,7 @@ function reqListener()
   var xDistance = 10;
   var yDistance = 40;
 
-  for(let i = 0; i < celcius.length-1; i++)
+  for(let i = 0; i < celcius.length -1 ; i++)
   {
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -99,28 +109,31 @@ function reqListener()
     ctx.stroke();
     // setting y at 410 otherwise the line for x-as wouldn't be straight
     newY = 410;
-    // maak nog een break statement
+
   }
 
-  // ctx.font = '10px monaco';
-  // ctx.fillText(celcius[0], 0.7, 10);
-  // ctx.fillText(celcius[10], 0.7, 400);
+  // hardcode for most lower and upper Celsius label
+  ctx.font = '10px helvetica';
+  ctx.fillText(celcius[0], 19, 10);
+  ctx.fillText(celcius[10], 22, 400);
 
-  var xAxisLength = 660;
+  var xAxisLength = 720;
   var yAxisLength = 400;
 
-  var yZero = (yAxisLength) - 3 * yDistance;
+  // calculating zero Celsius point
+  var yZero = 400 - 3 * yDistance;
   console.log(yZero)
 
   // find starting point of linegraph at January 1 and 1.9 degrees Celsius
   // calculating how many pixels fit in 5 degrees
-  var startingPoint = [40, yZero - (tempList[0] * (xDistance / 5))];
+  var startingPoint = [40, yZero - (tempList[0] * ((1/3)*(xDistance / 50)))];
   console.log(startingPoint)
 
   // starting at 1 because at that point is the first temprature
   for (let i = 1; i <= 366; i++)
   {
-    nextPoint = [startingPoint[0] + (xAxisLength * (1 / 366)), yZero - (tempList[i] * (xDistance / 5))];
+    nextPoint = [startingPoint[0] + (xAxisLength * (1 / 366)), yZero - ((1/2.5)*(tempList[i] * (xDistance / 5)))];
+    // nextPoint = [startingPoint[0] + (xAxisLength * (1 / 366)), yZero - (tempList[i] * (xDistance / 5))];
     ctx.beginPath()
     ctx.moveTo(startingPoint[0], startingPoint[1]);
     ctx.lineTo(nextPoint[0], nextPoint[1]);
@@ -129,9 +142,11 @@ function reqListener()
   }
 }
 
-  var requester = new XMLHttpRequest()
-  var getgitit = "https://michaelzon.github.io/dataprocessing/homework/week_2/rawdata.txt"
 
+  var requester = new XMLHttpRequest()
+
+  // saving link to textfile in a variable for usage
+  var getgitit = "https://michaelzon.github.io/dataprocessing/homework/week_2/rawdata.txt"
   requester.addEventListener("load", reqListener);
   requester.open("GET", getgitit)
   requester.send()
