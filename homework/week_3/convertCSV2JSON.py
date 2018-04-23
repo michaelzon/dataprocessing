@@ -30,7 +30,7 @@ with open('11302984_legofile.csv') as csv_f:
 print(rows)
 
 with open('11302984_legofile_json.json', 'w') as json_f:
-    json_f.write("{ 'data':")
+    json_f.write("{ data:")
     json.dump(rows, json_f)
     # json_f.write(']')
     # json_f.write('}')
