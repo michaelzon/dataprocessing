@@ -11,4 +11,6 @@ fieldnames = ("year","num_parts_MEAN")
 reader = csv.DictReader(csvlego, fieldnames)
 for row in reader:
     json.dump(row, jsonlego)
-    jsonlego.write('\n')
+    jsonlego.write
+
+# vergeet niet je file te sluiten !
