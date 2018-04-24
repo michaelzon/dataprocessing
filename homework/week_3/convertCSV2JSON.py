@@ -9,7 +9,7 @@ with open('11302984_legofile.csv') as csv_f:
     rows = list(reader)
 
 # write to json file, making it a dict
-with open('11302984_legofile_json.json', 'w') as json_f:
+with open('11302984_legofile.json', 'w') as json_f:
     json_f.write('{"data":' )
     json.dump(rows, json_f)
     json_f.write('}')
