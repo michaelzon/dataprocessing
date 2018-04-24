@@ -10,43 +10,27 @@
   </head>
   <body>
     <header> Barchart </header>
-    <p1 class="info"> Name: Michael zonnebelt </p1></br>
-    <p2 class="info"> Studentnummer: 11302984 </p2></br>
-    <p3 class ="info"> This barchart shows the avarage size of legosets over the
-    years. </p3></br>
+    <script type="text/javascript">
 
-    <div class="importdata"></div>
-    <script>
-      importdata();
+      d3.select("body").append("p").text("Name: Michael Zonneveld");
+      d3.select("body").append("p").text("Studentnummer: 11302984");
+      d3.select("body").append("p").text("This barchart shows the avarage size of legosets over the years")
+      d3.json("11302984_legofile.json", function(data) {
+
+      var dataset = [ 25, 7, 5, 26, 11, 8, 25, 14, 23, 19,
+                    14, 11, 22, 29, 11, 13, 12, 17, 18, 10,
+                    24, 18, 25, 9, 3 ];
+
+      d3.select("body").selectAll("div")
+        .data(dataset)
+        .enter()
+        .append("div")
+        .attr("class", "bar")
+        .style("height", function(d) {
+          var barheight = d * 5
+          return barheight + "px";
+        });
+      });
     </script>
-
-
-
-
-
-      <!-- // d3.json("11302984_legofile.json", function(data) {
-      //   var canvas = d3.select("body").append("svg")
-      //                   .attr("width", 500)
-      //                   .attr("height", 500)
-
-        // canvas.selectAll("rect")
-        //       .data(legodata)
-        //       .enter()
-        //         .append("rect")
-        //
-        //         // referencing to the right propertie of our data
-        //         .attr("width", function (d) {return d.num_parts_MEAN;})
-        //         .attr("height", 40)
-        //
-        //         // return index of each element
-        //         .attr("y", function(d, i) {i * 50})
-        //         .attr("fill", "steelblue")
-
-      }) -->
-
-
-
-
-    <!-- <div class ="legochart"> </div> -->
   </body>
 </html>

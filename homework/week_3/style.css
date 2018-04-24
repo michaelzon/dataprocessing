@@ -3,7 +3,7 @@ header {
   font-weight: bold;
 }
 
-.info {
+body {
   font-family: avenir;
 }
 
@@ -14,4 +14,12 @@ header {
   padding: 3px;
   margin: 1px;
   color: black;
+}
+
+div.bar {
+    display: inline-block;
+    width: 20px;
+    height: 75px;   /* We'll override this later */
+    background-color: steelblue;
+    margin-right: 2px;
 }
