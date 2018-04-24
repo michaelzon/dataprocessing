@@ -10,26 +10,88 @@
   </head>
   <body>
     <header> Barchart </header>
+    <div class="bar"></div>
+
     <script type="text/javascript">
 
-      d3.select("body").append("p").text("Name: Michael Zonneveld");
-      d3.select("body").append("p").text("Studentnummer: 11302984");
+      // writing information to my webpage per paragraph
+      paragraph = d3.select("body").append("p")
+      paragraph.text("Name: Michael Zonneveld")
+      d3.select("body").append("p").text("Studentnummer: 11302984")
       d3.select("body").append("p").text("This barchart shows the avarage size of legosets over the years")
+
+      // fetching data about Lego in JSON format
       d3.json("11302984_legofile.json", function(data) {
+        var lego = data;
+        for(var i = 0; i < lego.stats.length; i++){
+           d3.select("body").append("p").text(lego.stats[i]['year'])
+           d3.select("body").append("p").text(lego.stats[i]['num_parts_MEAN'])
+        }
 
-      var dataset = [ 25, 7, 5, 26, 11, 8, 25, 14, 23, 19,
-                    14, 11, 22, 29, 11, 13, 12, 17, 18, 10,
-                    24, 18, 25, 9, 3 ];
+      //Width and height
+      var w = 700;
+      var h = 250;
+      var x = 100;
+      var y = 100;
 
-      d3.select("body").selectAll("div")
-        .data(dataset)
-        .enter()
-        .append("div")
-        .attr("class", "bar")
-        .style("height", function(d) {
-          var barheight = d * 5
-          return barheight + "px";
-        });
+      // creating a canvas for my barchart
+      var svg = d3.select("body").append("svg")
+                  .attr("width", w)
+                  .attr("height", h)
+                  // .(function(d) { console.log("data=", d.data.year); return d; });
+
+
+        svg.selectAll("rect")
+              .data(lego.stats)
+              // lego.length, dat getal zoveel rects ga ik aanmaken
+              .enter()
+                .append("rect")
+                .attr("x", x)
+                .attr("y", y)
+                // referencing to the right propertie of our data
+                .attr("width", 50)
+                .attr("height", 40)
+
+              // referencing to the right propertie of our data
+              // .attr("width", function (d) {return lego.data[2]['num_parts_MEAN']})
+              // .attr("height", 40)
+
+              // // return index of each element
+              // .attr("y", function(d, i) {i * 50})
+              // .attr("fill", "steelblue")
+
+
+       // var canvas = d3.select("body").append("svg")
+       //                 .attr("width", 500)
+       //                 .attr("height", 500)
+       //
+       // canvas.selectAll("rect")
+       //       .data(data)
+       //       .enter()
+       //         .append("rect")
+       //
+       //         // referencing to the right propertie of our data
+       //         .attr("width", function (d) {return d.data.num_parts_MEAN;})
+       //         .attr("height", 40)
+       //
+       //         // return index of each element
+       //         .attr("y", function(d, i) {i * 50})
+       //         .attr("fill", "steelblue")
+
+
+      // var dataset = [ 25, 7, 5, 26, 11, 8, 25, 14, 23, 19,
+      //               14, 11, 22, 29, 11, 13, 12, 17, 18, 10,
+      //               24, 18, 25, 9, 3 ];
+      //
+      // d3.select("body").selectAll("div")
+      //   .data(dataset)
+      //   .enter()
+      //   .append("div")
+      //   .attr("class", "bar")
+      //   .style("height", function(d) {
+      //     var barheight = d * 5
+      //     return barheight + "px";
+      //   });
       });
     </script>
   </body>
