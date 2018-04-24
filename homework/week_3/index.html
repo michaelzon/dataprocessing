@@ -4,19 +4,26 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="javascript/d3.js"></script>
-    <script type="text/javascript" src="javascript/barchartscript.js"></script>
+    <!-- <script type="text/javascript" src="javascript/barchartscript.js"></script> -->
     <title> Lego Barchart </title>
   </head>
   <body>
     <header> Barchart </header>
-    <p1 class="info"> Name: Michael Zonneveld </p1></br>
+    <p1 class="info"> Name: Michael zonnie </p1></br>
     <p2 class="info"> Studentnummer: 11302984 </p2></br>
     <p3 class ="info"> This barchart shows the avarage size of legosets over the
     years. </p3></br>
-    <svg width="50" height="50">
-      <circle cx="25" cy="25" r="22"
-              fill="blue" stroke="gray" stroke-width="2"/>
-    </svg>
-    <div class = "legochart"> </div>
+    <script>
+      var dataset = [ 5, 10, 15, 20, 25 ];
+      d3.select("body").selectAll("p")
+        .data(dataset)
+        .enter()
+        .append("p")
+        .text(function(d) { return d; });
+    </script>
+
+
+
+    <!-- <div class ="legochart"> </div> -->
   </body>
 </html>
