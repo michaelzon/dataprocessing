@@ -1,3 +1,15 @@
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: avenir;
+    font-size: 13px;
+}
+
 body {
   font-family: avenir;
 }
