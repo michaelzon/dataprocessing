@@ -15,10 +15,10 @@
     <script type="text/javascript">
 
       // writing information to my webpage per paragraph
-      paragraph = d3.select("body").append("p")
-      paragraph.text("Name: Michael Zonneveld")
-      d3.select("body").append("p").text("Studentnummer: 11302984")
-      d3.select("body").append("p").text("This barchart shows the avarage size of legosets over the years")
+      paragraph = d3.select("body")
+      paragraph.append("p").text("Name: Michael Zonneveld")
+      paragraph.append("p").text("Studentnummer: 11302984")
+      paragraph.append("p").text("This barchart shows the avarage size of legosets over the years")
 
       // creating arrays for easier coding later on
       yearsArray = [];
@@ -35,13 +35,26 @@
            numbers = (lego.stats[i]['num_parts_MEAN'])
            numbersArray.push(numbers)
         }
-      // console.log(yearsArray)
-      // console.log(numbersArray)
 
-      //Width and height
+      //width and height of my canvas
       var w = 800;
-      var h = 300;
+      var h = 245;
       var barSpace = 1;
+
+      // create scale for height
+      var yScale = d3.scale.linear()
+                    .domain([0, d3.max(numbersArray)])
+                    .range([0, h]);
+
+      // and for width
+      var xScale = d3.scale.linear()
+                     .domain([0, d3.max(yearsArray)])
+                     .range([0, w]);
+
+      // function for creating x-axis later on
+      var xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .orient("bottom");
 
       // creating a canvas for visualising my barchart
       var svg = d3.select("body")
@@ -55,45 +68,50 @@
           .enter()
           .append("rect")
 
+          // calculating the width of every bar
           .attr("x", function(d, i){
-            // calculating the width of every bar (i = 14, index)
             return i * (w / numbersArray.length)
           })
+
+          // and height
           .attr("y", function(d, i){
-            return h - (d)
+            return yScale(h - (d))
           })
 
-          // shaping the bar in width
+          // calculating the width of my whole graphic
           .attr("width", w / numbersArray.length - barSpace)
 
-          //
+          // and its height
           .attr("height", function (d){
-            return d;
+            return yScale(d);
           })
 
+          // filling the bars with color
           .attr("fill", function(d) {
-            return "rgb(0, 0, " + (d * 10) + ")";
+            return "rgb(213, 0, " + (d * 10) + ")";
           });
 
+          // inserting values in bars
           svg.selectAll("text")
           			   .data(numbersArray)
           			   .enter()
           			   .append("text")
           			   .text(function(d) {
-          			   		return d;
+                      return d;
           			   })
+                   .attr("class", "textClass")
           			   .attr("text-anchor", "middle")
           			   .attr("x", function(d, i) {
           			   		return i * (w / numbersArray.length) + (w / numbersArray.length - barSpace)/2;
           			   })
           			   .attr("y", function(d) {
-          			   		return h - (d) + 14;
+          			   		return yScale(h - (d) + 14);
           			   })
-          			   .attr("font-family", "avenir")
-          			   .attr("font-size", "11px")
-          			   .attr("fill", "white");
 
-
+          // inserting x-axis on the canvas
+          svg.append("g")
+              .attr("class", "axis")
+              .call(xAxis);
 
       });
     </script>

@@ -1,31 +1,39 @@
+body {
+  font-family: avenir;
+}
+
 header {
   font-family: avenir;
   font-weight: bold;
 }
 
-body {
-  font-family: avenir;
+.textClass {
+    font-family: avenir;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.legochart {
+/* .legochart {
   font: 10px sans-serif;
   background-color: steelblue;
   text-align: right;
   padding: 3px;
   margin: 1px;
   color: black;
-}
+} */
 
-div.bar {
+/* div.bar {
     display: inline-block;
     width: 20px;
     height: 75px;
-    background-color: steelblue;
+    background-color: red;
     margin-right: 2px;
-}
+} */
 
-rect {
-    display: inline-block;
-    background-color: steelblue;
-    margin-right: 2px;
-}
+
+
+
+/* ("font-family", "avenir")
+// .attr("font-size", "11px")
+// .attr("fill", "black")
+// .attr("font-weight", "bold"); */
