@@ -19,7 +19,13 @@ body {
 div.bar {
     display: inline-block;
     width: 20px;
-    height: 75px; 
+    height: 75px;
+    background-color: steelblue;
+    margin-right: 2px;
+}
+
+rect {
+    display: inline-block;
     background-color: steelblue;
     margin-right: 2px;
 }
