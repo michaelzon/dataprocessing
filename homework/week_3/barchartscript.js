@@ -4,6 +4,7 @@
 //          https://bost.ocks.org/mike/bar/3/
 
 // creating lists with data for easier coding
+
 yearsArray = [];
 numbersArray = [];
 
