@@ -1,4 +1,6 @@
-/* source: http://bl.ocks.org/Caged/6476579 */
+/*  Name: Michael Zonneveld
+    Studentnumber: 11302984
+    Source tipbox: http://bl.ocks.org/Caged/6476579 */
 
 .axis path,
 .axis line {
@@ -14,6 +16,10 @@
 
 body {
   font-family: avenir;
+}
+
+p {
+  font-size: 20px;
 }
 
 header {

@@ -1,6 +1,10 @@
+# Name: Michael Zonneveld
+# Studentnumber: 11302984
+
 import csv
 import json
 
+# setting keys for indexing later on 
 fieldnames = ("year","num_parts_MEAN")
 
 # read the csv file

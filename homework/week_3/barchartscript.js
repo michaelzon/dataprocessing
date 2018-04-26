@@ -1,5 +1,7 @@
 // Name: Michael Zonneveld
 // Studentnumber: 11302984
+// Sources: http://bl.ocks.org/d3noob/8952219
+//          https://bost.ocks.org/mike/bar/3/
 
 // creating lists with data for easier coding
 yearsArray = [];
@@ -15,7 +17,7 @@ d3.json("11302984_legofile.json", function(data) {
      numbersArray.push(numbers)
   }
 
-//width and height of my canvas
+//width and height of my canvas plus padding for placement
 var w = 800;
 var h = 249;
 var barSpace = 1;
@@ -43,24 +45,24 @@ var yAxis = d3.svg.axis()
               .orient("left")
               .ticks(3);
 
+// creating tip box to show value
 var tip = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-              // return "<strong>Avarage:</strong> <span style='color:red'>" + d.lego + "</span>";
               return (d)
             })
 
-// creating a canvas for visualising my barchart
+// creating canvas for visualising barchart
 var svg = d3.select("body")
             .append("svg")
             .attr("width", w + (padding * 2))
             .attr("height", h + padding);
 
-// placing small box with value
+// placing box with value
 svg.call(tip);
 
-// placing a bar for every data value with 'd'
+// placing a bar for every data value
 svg.selectAll("rect")
     .data(numbersArray)
     .enter()
@@ -69,7 +71,7 @@ svg.selectAll("rect")
     .on('mouseover', tip.show)
     .on('mouseout', tip.hide)
 
-    // calculating the width of every bar
+    // calculating the width of the graphic
     .attr("x", function(d, i){
       return (i * ((w+(padding)) / numbersArray.length)) + padding
     })
@@ -79,7 +81,7 @@ svg.selectAll("rect")
       return yScale(d)
     })
 
-    // calculating the width of my whole graphic
+    // calculating the width of every bar
     .attr("width", w / numbersArray.length - barSpace)
 
     // and its height
