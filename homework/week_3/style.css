@@ -1,3 +1,5 @@
+/* source: http://bl.ocks.org/Caged/6476579 */
+
 .axis path,
 .axis line {
     fill: none;
@@ -22,30 +24,41 @@ header {
 .textClass {
     font-family: avenir;
     font-size: 12px;
-    font-weight: bold;
 }
 
-/* .legochart {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: right;
-  padding: 3px;
-  margin: 1px;
-  color: black;
-} */
+.bar {
+    fill: rgb(252, 243, 0)
+}
 
-/* div.bar {
-    display: inline-block;
-    width: 20px;
-    height: 75px;
-    background-color: red;
-    margin-right: 2px;
-} */
+.bar:hover {
+  fill: rgb(229, 0, 0)
+}
 
+/* value is shown in nice box */
+.d3-tip {
+  line-height: 1;
+  padding: 12px;
+  background: rgba(252, 243, 0, 0.4);
+  color: rgb(0, 0, 0);
+  border-radius: 1px;
+}
 
+/* with a little pointer to the bar */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 18px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(252, 243, 0, 0.4);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
 
-
-/* ("font-family", "avenir")
-// .attr("font-size", "11px")
-// .attr("fill", "black")
-// .attr("font-weight", "bold"); */
+/* placing the pointer in right position */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
