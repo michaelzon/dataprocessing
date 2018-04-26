@@ -25,6 +25,7 @@ p {
 header {
   font-family: avenir;
   font-weight: bold;
+  color: rgb(229, 0, 0);
 }
 
 .textClass {
