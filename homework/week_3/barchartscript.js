@@ -23,7 +23,7 @@ var h = 249;
 var barSpace = 1;
 var padding = 40;
 
-// creat scale for width
+// create scale for width
 var xScale = d3.scale.ordinal()
                 .domain(yearsArray)
                 .rangeRoundBands([10, w + padding + 5]);
