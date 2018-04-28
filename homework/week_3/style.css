@@ -41,7 +41,7 @@ header {
   fill: rgb(229, 0, 0)
 }
 
-/* value is shown in nice box */
+/* value is shown in box */
 .d3-tip {
   line-height: 1;
   padding: 12px;
