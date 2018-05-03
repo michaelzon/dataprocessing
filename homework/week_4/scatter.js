@@ -25,24 +25,29 @@ window.onload = function() {
 function getData(error, response) {
   if (error) throw error;
 
+  // make json format from the data
+  data = JSON.parse(response[0].responseText)
+
+  // create a list with countries
   countryArray = []
-  for(var i = 0; i < 27; i++){
-    data = JSON.parse(response[0].responseText)
+
+  for(var i = 0; i < 30; i++){
     countryArray.push(data.structure.dimensions.series[0].values[i]["name"])
   }
   console.log(countryArray)
 
-  // internetArray = []
-  //
-  //   data = JSON.parse(response[0].responseText)
-  //   axes = data.dataSets[0] //nog iets
-  //   for(var i = 0; i < 27; i++){
-  //     for (var j = 0; i < 2; j++){
-  //       connect = i + ":" + j + ":0:0"
-        // console.log(axes)
-//       }
-//   }
-//
+  // and a list with all the values
+  wellBeingArray = []
+
+  for(var i = 0; i < countryArray.length; i++){
+    for(var j = 0; j < 3; j++){
+      var linking = i + ":" + j +":0"
+      wellBeingArray.push(data.dataSets[0].series[linking].observations)
+    }
+  }
+  console.log(wellBeingArray)
+
+  
 };
 
 
