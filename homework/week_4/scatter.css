@@ -1,2 +1,17 @@
 /* Name: Michael Zonneveld
 Studentnumber: 11302984 */
+
+body {
+  font-family: avenir;
+}
+
+p {
+  font-size: 20px;
+}
+
+header {
+  font-family: avenir;
+  font-weight: bold;
+  color: rgb(0, 100, 50);
+  font-size:  200%;
+}
