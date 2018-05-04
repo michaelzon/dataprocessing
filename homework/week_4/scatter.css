@@ -17,7 +17,7 @@ header {
 }
 
 /* value is shown in box */
-/* .d3-tip {
+ .d3-tip {
   line-height: 1;
   padding: 12px;
   background: rgba(252, 243, 0, 0.4);
@@ -26,7 +26,7 @@ header {
 }
 
 /* with a little pointer to the bar */
-/* .d3-tip:after {
+.d3-tip:after {
   box-sizing: border-box;
   display: inline;
   font-size: 18px;
@@ -35,5 +35,5 @@ header {
   color: rgba(252, 243, 0, 0.4);
   content: "\25BC";
   position: absolute;
-  text-align: center; */
+  text-align: center;
 } */

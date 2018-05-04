@@ -99,12 +99,27 @@ var padding = 50;
 // create scale for width with extent returning the boundary as an array
 var xScale = d3.scaleLinear()
                 .domain(d3.extent(wellBeingDict, function(d) {return d.perception}))
-                .range([0, w]);
+                // .domain([0, 100])
+                .range([0, w - padding]);
 
-// and for height
+// also for height
 var yScale = d3.scaleLinear()
                .domain(d3.extent(wellBeingDict, function(d) {return d.votes}))
+               // .domain([0, 100])
                .range([h - padding, 0]);
+
+// for the radius of a point
+var rScale = d3.scaleLinear()
+                    .domain(d3.extent(wellBeingDict, function(d) {return d.internet}))
+                    .range([4, 20]);
+
+// // and lastly for the color of a point
+// var colorScale = d3.scaleOrdinal()
+//                     .domain(d3.extent(wellBeingDict, function(d) {return d.country}))
+//                     .range([1, 30]);
+
+// create color function to determine color for the dots
+var color = d3.scaleOrdinal(d3.schemeCategory20c);
 
 // function for creating x-axis later on
 var xAxis = d3.axisBottom()
@@ -115,22 +130,21 @@ var yAxis = d3.axisLeft()
    .scale(yScale);
 
 // creating tip box to show value
-// var tip = d3.tip()
-//          .attr('class', 'd3-tip')
-//          .offset([-10, 0])
-//          .html(function(d) {
-//            return (d)
-//            })
+var tip = d3.tip()
+         .attr('class', 'd3-tip')
+         .offset([0, 0])
+         .html(function(d) {
+           return (d)
+           })
 
 // creating a canvas to draw my scatterplot on
 var svg = d3.select("body")
             .append("svg")
             .attr("width", w)
-            .attr("height", h);
+            .attr("height", h)
 
-          // placing box with value
-          // svg.call(tip);
-
+            // placing box with value
+            svg.call(tip)
 
             // drawing x-axis
             svg.append("g")
@@ -153,6 +167,10 @@ var svg = d3.select("body")
                .attr("transform", "translate(80, -60)") //hier klopt nog geen zak van
                .attr("cx", d => xScale(d.perception))
                .attr("cy", d => yScale(d.votes))
-               .attr("r", 7);
+               .attr("r", d => rScale(d.internet))
+               .on('mouseover', tip.show)
+               .on('mouseout', tip.hide)
+               .style("fill", d => color(d.country))
+             });
 
 };
