@@ -1,6 +1,9 @@
 // Name: Michael Zonneveld
 // Studentnumber: 11302984
 
+// making a dict for indexing later on
+var wellBeingDict = []
+
 // function that will be triggered when the page is loaded
 window.onload = function() {
 
@@ -54,13 +57,13 @@ function getData(error, response) {
     internetArray.push(values[i]);
   }
 
-  // also for the voter turn out values
-  var voterArray = [];
+  // also for the votes turn out values
+  var votesArray = [];
 
   for(var i = 1; i < values.length; i+=3){
-    voterArray.push(values[i]);
+    votesArray.push(values[i]);
   }
-
+  console.log(votesArray)
   // and for the perception of corruption
   var perceptionArray = [];
 
@@ -68,50 +71,81 @@ function getData(error, response) {
     perceptionArray.push(values[i]);
   }
 
-  // making a dict for indexing later on
-  var wellBeingDict = [];
+  // // making a dict for indexing later on
+  // var wellBeingDict = [];
 
   // linking keys and values in a dictionary
   for(var i = 0; i < 30; i++){
     wellBeingDict.push({
       country: countryArray[i],
-      internetAccess: internetArray[i],
-      voterTurnOut: voterArray[i],
-      perceptionOfCorruption: perceptionArray[i]
+      internet: internetArray[i],
+      votes: votesArray[i],
+      perception: perceptionArray[i]
     });
   }
-  // console.log(wellBeingDict[2]['internetAccess'])
 
-  // data = [[perceptionArray], [voterArray]];
+//   for(i = 0; i < wellBeingDict.length; i++){
+//     console.log(i)
+//   console.log(wellBeingDict[i]['internet'])
+// }
+
+  // data = [[perceptionArray], [votesArray]];
   // console.log(data)
 
 // };
 //
 // function makeCanvas(){
 
-var w = 1000;
-var h = 500;
-var margin = {top: 20, right: 20, bottom: 30, left: 40};
+var w = 1200;
+var h = 600;
+var padding = 50;
 
 var xScale = d3.scaleLinear()
-                .domain([0, d3.max(perceptionArray, d => d[0])])
+                .domain(d3.extent(wellBeingDict, function(d) {return d.perception}))
                 .range([0, w]);
 
 var yScale = d3.scaleLinear()
-               .domain([0, d3.max(voterArray, d => d[1])])
-               .range([h, 0]);
-xScale
-   .domain(perceptionArray)
-   .range([0, w]);
+               .domain(d3.extent(wellBeingDict, function(d) {return d.votes}))
+               .range([h - padding, 0]);
 
-yScale
-    .domain([0, d3.max(voterArray, function(d) { return d[1]; })])
-    .range([0, h]);
+var xAxis = d3.axisBottom()
+   .scale(xScale);
+
+var yAxis = d3.axisLeft()
+   .scale(yScale);
 
 // creating a canvas to draw my scatterplot on
 var svg = d3.select("body")
             .append("svg")
             .attr("width", w)
             .attr("height", h);
+
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(50," + (h - padding) + ")")
+                .call(xAxis)
+
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + padding + ")")
+                .call(yAxis)
+
+            svg.selectAll("circle")
+               .data(wellBeingDict)
+               .enter()
+               .append("circle")
+               .attr("cx", d => xScale(d.perception))
+               .attr("cy", d => yScale(d.votes))
+               .attr("r", 5);
+
+
+               // // .attr("cx", d => xScale(12))
+               // .attr("cx", function(d, i){
+               //   return xScale(d)
+               // // .attr("cy", d => yScale(10))
+               // .attr("cy", function(d, i){
+               //   return yScale(d)
+               // })
+               // .attr("r", 5);
 
 };
