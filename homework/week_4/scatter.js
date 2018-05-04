@@ -53,6 +53,7 @@ function getData(error, response) {
   // list for all the internet access values
   var internetArray = [];
 
+  // internet value is on 0th position in oecdArray
   for (var i = 0; i < values.length; i+=3){
     internetArray.push(values[i]);
   }
@@ -60,12 +61,18 @@ function getData(error, response) {
   // also for the voting turn out values
   var votesArray = [];
 
+  // voting rate is on 1th position
   for(var i = 1; i < values.length; i+=3){
     votesArray.push(values[i]);
   }
 
   // and one for the perception of corruption
   var perceptionArray = [];
+
+  // perception of corruption is on 2th position
+  for(var i = 2; i < values.length; i+=3){
+  perceptionArray.push(values[i]);
+  }
 
   // // making a dict for indexing later on
   // var wellBeingDict = [];
