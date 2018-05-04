@@ -32,7 +32,7 @@ function getData(error, response) {
     countryArray.push(data.structure.dimensions.series[0].values[i]["name"])
   }
 
-  // and a list for all the values
+  // and a list with all the elements from api request
   var oecdArray = [];
 
   // place the values in the list
@@ -50,31 +50,27 @@ function getData(error, response) {
   values.push(oecdArray[i][0][0]);
   }
 
-  // list for all the values about internet access
+  // list for all the internet access values
   var internetArray = [];
 
   for (var i = 0; i < values.length; i+=3){
     internetArray.push(values[i]);
   }
 
-  // also for the votes turn out values
+  // also for the voting turn out values
   var votesArray = [];
 
   for(var i = 1; i < values.length; i+=3){
     votesArray.push(values[i]);
   }
-  console.log(votesArray)
-  // and for the perception of corruption
-  var perceptionArray = [];
 
-  for(var i = 2; i< values.length; i+=3){
-    perceptionArray.push(values[i]);
-  }
+  // and one for the perception of corruption
+  var perceptionArray = [];
 
   // // making a dict for indexing later on
   // var wellBeingDict = [];
 
-  // linking keys and values in a dictionary
+  // linking keys and values in dictionary
   for(var i = 0; i < 30; i++){
     wellBeingDict.push({
       country: countryArray[i],
@@ -84,14 +80,6 @@ function getData(error, response) {
     });
   }
 
-//   for(i = 0; i < wellBeingDict.length; i++){
-//     console.log(i)
-//   console.log(wellBeingDict[i]['internet'])
-// }
-
-  // data = [[perceptionArray], [votesArray]];
-  // console.log(data)
-
 // };
 //
 // function makeCanvas(){
@@ -100,17 +88,21 @@ var w = 1200;
 var h = 600;
 var padding = 50;
 
+// create scale for width with extent returning the boundary as an array
 var xScale = d3.scaleLinear()
                 .domain(d3.extent(wellBeingDict, function(d) {return d.perception}))
                 .range([0, w]);
 
+// and for height
 var yScale = d3.scaleLinear()
                .domain(d3.extent(wellBeingDict, function(d) {return d.votes}))
                .range([h - padding, 0]);
 
+// function for creating x-axis later on
 var xAxis = d3.axisBottom()
    .scale(xScale);
 
+// and for y-axis
 var yAxis = d3.axisLeft()
    .scale(yScale);
 
@@ -120,32 +112,25 @@ var svg = d3.select("body")
             .attr("width", w)
             .attr("height", h);
 
+            // drawing x-axis
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(50," + (h - padding) + ")")
                 .call(xAxis)
 
+            // drawing y-axis
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(" + padding + ")")
                 .call(yAxis)
 
+            // drawing the scatters
             svg.selectAll("circle")
                .data(wellBeingDict)
                .enter()
                .append("circle")
                .attr("cx", d => xScale(d.perception))
                .attr("cy", d => yScale(d.votes))
-               .attr("r", 5);
-
-
-               // // .attr("cx", d => xScale(12))
-               // .attr("cx", function(d, i){
-               //   return xScale(d)
-               // // .attr("cy", d => yScale(10))
-               // .attr("cy", function(d, i){
-               //   return yScale(d)
-               // })
-               // .attr("r", 5);
+               .attr("r", 7);
 
 };
