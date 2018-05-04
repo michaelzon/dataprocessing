@@ -15,3 +15,25 @@ header {
   color: rgb(0, 100, 50);
   font-size:  200%;
 }
+
+/* value is shown in box */
+/* .d3-tip {
+  line-height: 1;
+  padding: 12px;
+  background: rgba(252, 243, 0, 0.4);
+  color: rgb(0, 0, 0);
+  border-radius: 1px;
+}
+
+/* with a little pointer to the bar */
+/* .d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 18px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(252, 243, 0, 0.4);
+  content: "\25BC";
+  position: absolute;
+  text-align: center; */
+} */

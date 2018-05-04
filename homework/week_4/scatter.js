@@ -87,6 +87,7 @@ function getData(error, response) {
     });
   }
 
+
 // };
 //
 // function makeCanvas(){
@@ -113,11 +114,23 @@ var xAxis = d3.axisBottom()
 var yAxis = d3.axisLeft()
    .scale(yScale);
 
+// creating tip box to show value
+// var tip = d3.tip()
+//          .attr('class', 'd3-tip')
+//          .offset([-10, 0])
+//          .html(function(d) {
+//            return (d)
+//            })
+
 // creating a canvas to draw my scatterplot on
 var svg = d3.select("body")
             .append("svg")
             .attr("width", w)
             .attr("height", h);
+
+          // placing box with value
+          // svg.call(tip);
+
 
             // drawing x-axis
             svg.append("g")
@@ -136,6 +149,8 @@ var svg = d3.select("body")
                .data(wellBeingDict)
                .enter()
                .append("circle")
+               .attr("class", "point")
+               .attr("transform", "translate(80, -60)") //hier klopt nog geen zak van 
                .attr("cx", d => xScale(d.perception))
                .attr("cy", d => yScale(d.votes))
                .attr("r", 7);
