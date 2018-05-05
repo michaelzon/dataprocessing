@@ -28,7 +28,7 @@ function getData(error, response) {
   // list for all the countries
   var countryArray = [];
 
-  for(var i = 0; i < 30; i++){
+  for(var i = 0; i < 30; i ++){
     countryArray.push(data.structure.dimensions.series[0].values[i]["name"])
   }
 
@@ -36,9 +36,9 @@ function getData(error, response) {
   var oecdArray = [];
 
   // place the values in the list
-  for(var i = 0; i < countryArray.length; i++){
-    for(var j = 0; j < 3; j++){
-      var linking = i + ":" + j +":0";
+  for(var i = 0; i < countryArray.length; i ++){
+    for(var j = 0; j < 4; j ++){
+      var linking = i + ":" + j + ":0";
       oecdArray.push(data.dataSets[0].series[linking].observations);
     }
   }
@@ -46,7 +46,7 @@ function getData(error, response) {
   var values = [];
 
   // digging a little bit further so we skip non-values
-  for(var i = 0; i < oecdArray.length; i++){
+  for(var i = 0; i < oecdArray.length; i ++){
   values.push(oecdArray[i][0][0]);
   }
 
@@ -54,7 +54,7 @@ function getData(error, response) {
   var internetArray = [];
 
   // internet value is on 0th position in oecdArray
-  for (var i = 0; i < values.length; i+=3){
+  for (var i = 0; i < values.length; i += 4){
     internetArray.push(values[i]);
   }
 
@@ -62,15 +62,23 @@ function getData(error, response) {
   var votesArray = [];
 
   // voting rate is on 1th position
-  for(var i = 1; i < values.length; i+=3){
+  for(var i = 1; i < values.length; i += 4){
     votesArray.push(values[i]);
+  }
+
+  // share of people with secondary degree
+  var secDegreeArray = [];
+
+  // which is on the 2th position
+  for(var i = 2; i < values.length; i += 4){
+    secDegreeArray.push(values[i]);
   }
 
   // and one for the perception of corruption
   var perceptionArray = [];
 
-  // perception of corruption is on 2th position
-  for(var i = 2; i < values.length; i+=3){
+  // which is on 3th position
+  for(var i = 3; i < values.length; i += 4){
   perceptionArray.push(values[i]);
   }
 
@@ -83,10 +91,10 @@ function getData(error, response) {
       country: countryArray[i],
       internet: internetArray[i],
       votes: votesArray[i],
+      education: secDegreeArray[i],
       perception: perceptionArray[i]
     });
   }
-
 
 // };
 //
@@ -99,27 +107,22 @@ var padding = 50;
 // create scale for width with extent returning the boundary as an array
 var xScale = d3.scaleLinear()
                 .domain(d3.extent(wellBeingDict, function(d) {return d.perception}))
-                // .domain([0, 100])
                 .range([0, w - padding]);
 
 // also for height
 var yScale = d3.scaleLinear()
                .domain(d3.extent(wellBeingDict, function(d) {return d.votes}))
-               // .domain([0, 100])
                .range([h - padding, 0]);
 
 // for the radius of a point
 var rScale = d3.scaleLinear()
-                    .domain(d3.extent(wellBeingDict, function(d) {return d.internet}))
+                    .domain(d3.extent(wellBeingDict, function(d) {return d.education}))
                     .range([4, 20]);
 
-// // and lastly for the color of a point
-// var colorScale = d3.scaleOrdinal()
-//                     .domain(d3.extent(wellBeingDict, function(d) {return d.country}))
-//                     .range([1, 30]);
-
-// create color function to determine color for the dots
-var color = d3.scaleOrdinal(d3.schemeCategory20c);
+// and a function for sequential coloring (colorblind-friendly)
+var color = d3.scaleSequential(d3.interpolateRgb("#edf8fb","#006d2c"))
+              .domain([d3.min(wellBeingDict, function(d) {return d.education}),
+                      d3.max(wellBeingDict, function(d) {return d.education})]);
 
 // function for creating x-axis later on
 var xAxis = d3.axisBottom()
@@ -164,22 +167,22 @@ var svg = d3.select("body")
                .enter()
                .append("circle")
                .attr("class", "point")
-               .attr("transform", "translate(80, -60)") //hier klopt nog geen zak van
+               .attr("transform", "translate(80, -60)") //hier klopt geen zak van
                .attr("cx", d => xScale(d.perception))
                .attr("cy", d => yScale(d.votes))
-               .attr("r", d => rScale(d.internet))
+               .attr("r", d => rScale(d.education))
                .on('mouseover', tip.show)
                .on('mouseout', tip.hide)
-               .style("fill", d => color(d.country));
+               .style("fill", d => color(d.education));
 
 
-               // Build menus
-              d3.select('#update')
-                .selectAll('li')
-                .data(updateOptions)
-                .enter()
-                .append('li')
-                .text(function(d) {return d;});
+              //  // Build menus
+              // d3.select('#update')
+              //   .selectAll('li')
+              //   .data(updateOptions)
+              //   .enter()
+              //   .append('li')
+              //   .text(function(d) {return d;});
                 // .classed('selected', function(d) {
                 //   return d === xAxis;
                 // })
