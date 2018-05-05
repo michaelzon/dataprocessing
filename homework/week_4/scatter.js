@@ -142,7 +142,7 @@ var tip = d3.tip()
 
 var legend = d3.legendColor()
        .labelFormat(d3.format(".0f"))
-       .scale(colorScale)
+       .scale(color)
        .shapePadding(5)
        .shapeWidth(50)
        .shapeHeight(20)
@@ -171,7 +171,7 @@ var svg = d3.select("body")
 
             svg.append("g")
                .attr("transform", "translate(352, 60)")
-               .call(colorLegend);
+               .call(legend);
 
             // drawing the scatters
             svg.selectAll("circle")
