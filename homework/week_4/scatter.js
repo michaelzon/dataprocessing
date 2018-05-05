@@ -8,7 +8,7 @@ var wellBeingDict = []
 window.onload = function() {
 
   // retrieve data from api and store the queries
-  var wellBeing = "https://stats.oecd.org/SDMX-JSON/data/RWB/AUS+AUT+BEL+CAN+CZE+DNK+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ITA+JPN+KOR+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+ESP+SWE+CHE+TUR+GBR+USA.VOTERS_SH+BB_ACC+SUBJ_PERC_CORR.VALUE/all?startTime=2014&endTime=2014";
+  var wellBeing = "https://stats.oecd.org/SDMX-JSON/data/RWB/AUS+AUT+BEL+CAN+CZE+DNK+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ITA+JPN+KOR+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+ESP+SWE+CHE+TUR+GBR+USA.VOTERS_SH+BB_ACC+EDU38_SH+SUBJ_PERC_CORR.VALUE/all?startTime=2014&endTime=2014";
 
   // request for the queries
   d3.queue()
@@ -170,7 +170,23 @@ var svg = d3.select("body")
                .attr("r", d => rScale(d.internet))
                .on('mouseover', tip.show)
                .on('mouseout', tip.hide)
-               .style("fill", d => color(d.country))
-             });
+               .style("fill", d => color(d.country));
+
+
+               // Build menus
+              d3.select('#update')
+                .selectAll('li')
+                .data(updateOptions)
+                .enter()
+                .append('li')
+                .text(function(d) {return d;});
+                // .classed('selected', function(d) {
+                //   return d === xAxis;
+                // })
+                // .on('click', function(d) {
+                //   xAxis = d;
+                //   updateChart();
+                //   updateMenus();
+                // });
 
 };
