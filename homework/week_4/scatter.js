@@ -140,26 +140,38 @@ var tip = d3.tip()
            return (d)
            })
 
+var legend = d3.legendColor()
+       .labelFormat(d3.format(".0f"))
+       .scale(colorScale)
+       .shapePadding(5)
+       .shapeWidth(50)
+       .shapeHeight(20)
+       .labelOffset(12);
+
 // creating a canvas to draw my scatterplot on
 var svg = d3.select("body")
             .append("svg")
             .attr("width", w)
-            .attr("height", h)
+            .attr("height", h);
 
             // placing box with value
-            svg.call(tip)
+            svg.call(tip);
 
             // drawing x-axis
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(50," + (h - padding) + ")")
-                .call(xAxis)
+                .call(xAxis);
 
             // drawing y-axis
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(" + padding + ")")
-                .call(yAxis)
+                .call(yAxis);
+
+            svg.append("g")
+               .attr("transform", "translate(352, 60)")
+               .call(colorLegend);
 
             // drawing the scatters
             svg.selectAll("circle")
@@ -174,7 +186,6 @@ var svg = d3.select("body")
                .on('mouseover', tip.show)
                .on('mouseout', tip.hide)
                .style("fill", d => color(d.education));
-
 
               //  // Build menus
               // d3.select('#update')
