@@ -1,9 +1,6 @@
 // Name: Michael Zonneveld
 // Studentnumber: 11302984
 
-// making a dict for indexing later on
-var wellBeingDict = []
-
 // function that will be triggered when the page is loaded
 window.onload = function() {
 
@@ -14,8 +11,6 @@ window.onload = function() {
   d3.queue()
   .defer(d3.request, wellBeing)
   .awaitAll(getData);            // due to asynchronounity wait for all
-
-  // makeCanvas();
 
 };
 
@@ -82,8 +77,8 @@ function getData(error, response) {
   perceptionArray.push(values[i]);
   }
 
-  // // making a dict for indexing later on
-  // var wellBeingDict = [];
+  // making a dict for indexing later on
+  var wellBeingDict = [];
 
   // linking keys and values in dictionary
   for(var i = 0; i < 30; i++){
@@ -106,13 +101,13 @@ var padding = 50;
 
 // create scale for width with extent returning the boundary as an array
 var xScale = d3.scaleLinear()
-                .domain(d3.extent(wellBeingDict, function(d) {return d.perception}))
+                .domain(d3.extent(wellBeingDict, function(d) {return d.perception})).nice()
                 .range([0, w - padding]);
 
 // also for height
 var yScale = d3.scaleLinear()
-               .domain(d3.extent(wellBeingDict, function(d) {return d.votes}))
-               .range([h - padding, 0]);
+                .domain([0, 100])
+                .range([h - padding, 0]);
 
 // for the radius of a point
 var rScale = d3.scaleLinear()
@@ -132,27 +127,19 @@ var xAxis = d3.axisBottom()
 var yAxis = d3.axisLeft()
    .scale(yScale);
 
-// standard variable on x-axis
-var independent = "Perception of corruption"
-
-// variabele for the y-axis
-var dependent = "Voter turnout"
-
 // update options
 var update = ["Perception of corruption on x axis (%)",
               "Share of households with internet broadband access (%)"];
 
-var descriptions = ["Perception of corruption (percentage)",
-                    "Share of households with internet broadband access (percentage)",
-                    "Voter turnout in general election (percentage)"]
-
 // creating tip box to show value
 var tip = d3.tip()
          .attr('class', 'd3-tip')
-         .offset([0, 0])
-         .html(function(d) {
-           return (d)
-           })
+         .offset([-20, 0])
+         .html(function(d, i) {
+           return "Country: " + d.country
+             + "<br>" + "Share of households with internet broadband access: " + d.internet + "<br>" +
+        " Voter turnout: " + d.votes + "<br>" + "Labour force withsecondary education: " + d.education + "<br>" +
+        " Perception of corruption: " + d.perception});
 
 // creating legend
 var legend = d3.legendColor()
@@ -179,7 +166,6 @@ var options = select
   .on('click', function(d) {
     xAxis = d;
     updateChart();
-    updateMenus();
   });
 
 // creating a canvas to draw my scatterplot on
@@ -195,13 +181,24 @@ var svg = d3.select("body")
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(50," + (h - padding) + ")")
-                .call(xAxis);
+                .call(xAxis)
+                .append("text")
+                  .attr("transform", "translate(1100, 0)")
+                  .attr("class", "textClass")
+                  .style("text-anchor", "end")
+                  .text("Voter turnout (%)");
 
             // drawing y-axis
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(" + padding + ")")
-                .call(yAxis);
+                .call(yAxis)
+                .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 100)
+                  .attr("class", "textClass")
+                  .style("text-anchor", "end")
+                  .text("Voter turnout (%)");
 
             // placing legend
             svg.append("g")
@@ -214,7 +211,7 @@ var svg = d3.select("body")
                .enter()
                .append("circle")
                .attr("class", "point")
-               .attr("transform", "translate(80, -60)") //hier klopt geen zak van
+               .attr("transform", "translate(50, 0)")
                .attr("cx", d => xScale(d.perception))
                .attr("cy", d => yScale(d.votes))
                .attr("r", d => rScale(d.education))
@@ -222,9 +219,7 @@ var svg = d3.select("body")
                .on('mouseout', tip.hide)
                .style("fill", d => color(d.education));
 
-function onchange() {
-
-  var indepedent = this.value
+function updateChart(init) {
+// i could not figure it out
 };
-
 };
