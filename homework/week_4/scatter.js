@@ -1,5 +1,10 @@
-// Name: Michael Zonneveld
-// Studentnumber: 11302984
+// Name:      Michael Zonneveld
+// Studentnumber:   11302984
+// Date:      06/05/2018
+// Sources:   http://bl.ocks.org/jfreels/6734823
+//            https://bl.ocks.org/zanarmstrong/0b6276e033142ce95f7f374e20f1c1a7
+//            http://bl.ocks.org/LauraCortes/020b0a4dc8e25070a42421382324109d
+//            http://charts.animateddata.co.uk/whatmakesushappy/
 
 // function that will be triggered when the page is loaded
 window.onload = function() {
@@ -219,24 +224,27 @@ window.onload = function() {
     function updateX() {
 
       // update axis and scale
-      var independent = this.value
+      var independent = this.independent
                       xScale.domain(d3.extent(wellBeingDict, function(d) {return d[independent]})).nice()
                       xAxis.scale(xScale)
 
                 // place new x-axis
                 d3.select('#xAxis')
-                  .transition().duration(750)
+                  .transition()
+                  .duration(750)
                   .call(xAxis)
 
                 // draw new scatters
                 d3.selectAll('circle')
-                     .transition().duration(750)
+                     .transition()
+                     .duration(750)
                      .delay(function (d,i) {
-                          return i * 100
+                          return i * 50
                       })
                      .attr('cx',function (d) {
                          return xScale(d[independent])
                      });
+
     };
   };
 };
