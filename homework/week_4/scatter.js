@@ -129,7 +129,7 @@ var yAxis = d3.axisLeft()
 
 // update options
 var update = ["Perception of corruption on x axis (%)",
-              "Share of households with internet broadband access (%)"];
+              "Share of households with internet broadband access on x axis (%)"];
 
 // creating tip box to show value
 var tip = d3.tip()
@@ -182,23 +182,26 @@ var svg = d3.select("body")
                 .attr("class", "axis")
                 .attr("transform", "translate(50," + (h - padding) + ")")
                 .call(xAxis)
-                .append("text")
-                  .attr("transform", "translate(1100, 0)")
-                  .attr("class", "textClass")
-                  .style("text-anchor", "end")
-                  .text("Voter turnout (%)");
+
+            // adding label
+            svg.append("text")
+                .attr("transform", "translate(1000, 585)")
+                .attr("class", "textClass")
+                .style("text-anchor", "middle")
+                .text("Perception of corruption (%)");
 
             // drawing y-axis
             svg.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(" + padding + ")")
                 .call(yAxis)
-                .append("text")
-                  .attr("transform", "rotate(-90)")
-                  .attr("y", 100)
-                  .attr("class", "textClass")
-                  .style("text-anchor", "middle")
-                  .text("Voter turnout (%)");
+
+            // adding label
+            svg.append("text")
+                .attr("transform", "translate(15, 50) rotate(-90)")
+                .attr("class", "textClass")
+                .style("text-anchor", "end")
+                .text("Voter turnout (%)");
 
             // placing legend
             svg.append("g")
