@@ -197,7 +197,7 @@ var svg = d3.select("body")
                   .attr("transform", "rotate(-90)")
                   .attr("y", 100)
                   .attr("class", "textClass")
-                  .style("text-anchor", "end")
+                  .style("text-anchor", "middle")
                   .text("Voter turnout (%)");
 
             // placing legend
