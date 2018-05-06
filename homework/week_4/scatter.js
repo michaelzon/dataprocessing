@@ -148,6 +148,20 @@ var legend = d3.legendColor()
        .shapeHeight(20)
        .labelOffset(12);
 
+var update = d3.select('head')
+                .append('span')
+                .text('Select y-axis variable: ');
+
+// var independent = svg.append('select')
+//                  .attr('id','ySelect')
+//                  .on('change',yChange) // call yCange function on input
+//                  .selectAll('option')
+//                  .data(selectData)
+//                  .enter()
+//                  .append('option')
+//                  .attr('value', function (d) { return d.text })
+//                  .text(function (d) { return d.label ;});
+
 // creating a canvas to draw my scatterplot on
 var svg = d3.select("body")
             .append("svg")
@@ -170,7 +184,7 @@ var svg = d3.select("body")
                 .call(yAxis);
 
             svg.append("g")
-               .attr("transform", "translate(352, 60)")
+               .attr("transform", "translate(1100, 0)")
                .call(legend);
 
             // drawing the scatters
