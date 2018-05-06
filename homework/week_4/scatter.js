@@ -100,7 +100,8 @@ window.onload = function() {
 
   // create scale for width with extent returning the boundary as an array
   var xScale = d3.scaleLinear()
-                  .domain(d3.extent(wellBeingDict, function(d) {return d.perception})).nice()
+                  .domain(d3.extent(wellBeingDict, function(d) {return d.perception}))
+                  .nice() // ensure scatters are within the range
                   .range([0, w - padding]);
 
   // also for height
