@@ -132,6 +132,20 @@ var xAxis = d3.axisBottom()
 var yAxis = d3.axisLeft()
    .scale(yScale);
 
+// standard variable on x-axis
+var independent = "Perception of corruption"
+
+// variabele for the y-axis
+var dependent = "Voter turnout"
+
+// update options
+var update = ["Perception of corruption on x axis (%)",
+              "Share of households with internet broadband access (%)"];
+
+var descriptions = ["Perception of corruption (percentage)",
+                    "Share of households with internet broadband access (percentage)",
+                    "Voter turnout in general election (percentage)"]
+
 // creating tip box to show value
 var tip = d3.tip()
          .attr('class', 'd3-tip')
@@ -140,6 +154,7 @@ var tip = d3.tip()
            return (d)
            })
 
+// creating legend
 var legend = d3.legendColor()
        .labelFormat(d3.format(".0f"))
        .scale(color)
@@ -148,19 +163,24 @@ var legend = d3.legendColor()
        .shapeHeight(20)
        .labelOffset(12);
 
-var update = d3.select('head')
-                .append('span')
-                .text('Select y-axis variable: ');
+// creating selection menu
+var select = d3.select('body')
+  .append('select')
+  	.attr('class','select')
+    .on('change',onchange)
 
-// var independent = svg.append('select')
-//                  .attr('id','ySelect')
-//                  .on('change',yChange) // call yCange function on input
-//                  .selectAll('option')
-//                  .data(selectData)
-//                  .enter()
-//                  .append('option')
-//                  .attr('value', function (d) { return d.text })
-//                  .text(function (d) { return d.label ;});
+var options = select
+  .selectAll('option')
+	.data(update)
+  .enter()
+	.append('option')
+	.text(function (d) {return d;})
+  .classed('selected', function(d) {return d === xAxis;})
+  .on('click', function(d) {
+    xAxis = d;
+    updateChart();
+    updateMenus();
+  });
 
 // creating a canvas to draw my scatterplot on
 var svg = d3.select("body")
@@ -168,7 +188,7 @@ var svg = d3.select("body")
             .attr("width", w)
             .attr("height", h);
 
-            // placing box with value
+            // boxes with value's
             svg.call(tip);
 
             // drawing x-axis
@@ -183,6 +203,7 @@ var svg = d3.select("body")
                 .attr("transform", "translate(" + padding + ")")
                 .call(yAxis);
 
+            // placing legend
             svg.append("g")
                .attr("transform", "translate(1100, 0)")
                .call(legend);
@@ -201,20 +222,9 @@ var svg = d3.select("body")
                .on('mouseout', tip.hide)
                .style("fill", d => color(d.education));
 
-              //  // Build menus
-              // d3.select('#update')
-              //   .selectAll('li')
-              //   .data(updateOptions)
-              //   .enter()
-              //   .append('li')
-              //   .text(function(d) {return d;});
-                // .classed('selected', function(d) {
-                //   return d === xAxis;
-                // })
-                // .on('click', function(d) {
-                //   xAxis = d;
-                //   updateChart();
-                //   updateMenus();
-                // });
+function onchange() {
+
+  var indepedent = this.value
+};
 
 };
