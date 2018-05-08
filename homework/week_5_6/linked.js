@@ -16,27 +16,124 @@ window.onload = function() {
 function getData(error, response) {
   if (error) throw error;
 
-  // make json format from the data
-  var data = JSON.parse(response[0].responseText);
+  // make json format from the first data set
+  var firstData = JSON.parse(response[0].responseText);
 
   // list for all the regions
-  var regionsArray = [];
+  var firstRegionsArray = [];
 
   // insert twelve regions in array
   for(var i = 0; i < 12; i ++){
-    regionsArray.push(data.structure.dimensions.series[0].values[i]["name"])
+    firstRegionsArray.push(firstData.structure.dimensions.series[0].values[i]["name"])
   }
 
+  // skoopdiewoopdiedoop
+
   // and a list with all the elements from api request
-  var valuesArray = [];
+  var firstSet = [];
 
   // push 8 elements in an with strictly values
-  for(var i = 0; i < regionsArray.length; i ++){
+  for(var i = 0; i < firstRegionsArray.length; i ++){
     for(var j = 0; j < 8; j ++){
       var linking = i + ":" + j + ":0";
-      valuesArray.push(data.dataSets[0].series[linking].observations["0"]["0"]);
+      firstSet.push(firstData.dataSets[0].series[linking].observations["0"]["0"]);
     }
   }
 
+  // list for all the unemployment rate values
+  var unemRaArray = [];
 
+  // internet value is on 0th position in oecdArray
+  for (var i = 0; i < firstSet.length; i += 8){
+    unemRaArray.push(firstSet[i]);
+  }
+
+  // for the employment rate values
+  var empRaArray = [];
+
+  // voting rate is on 1th position
+  for(var i = 1; i < firstSet.length; i += 8){
+    empRaArray.push(firstSet[i]);
+  }
+
+  // for the share of labour force with at least secondary education
+  var eduShArray = [];
+
+  // which is on the 2th position
+  for(var i = 2; i < firstSet.length; i += 8){
+    eduShArray.push(firstSet[i]);
+  }
+
+  // for the voter turnout in general election
+  var votersShArray = [];
+
+  // which is on 3th position
+  for(var i = 3; i < firstSet.length; i += 8){
+  votersShArray.push(firstSet[i]);
+  }
+
+  // for the perceived social network support values
+  var socSuppArray = [];
+
+  // which is on 4th position
+  for(var i = 4; i < firstSet.length; i += 8){
+  socSuppArray.push(firstSet[i]);
+  }
+
+  // for the share of households with internet broadband access values
+  var bbAccArray = [];
+
+  // which is on 5th position
+  for(var i = 5; i < firstSet.length; i += 8){
+  bbAccArray.push(firstSet[i]);
+  }
+
+  // for the disposable income per capita values
+  var incomeDispArray = [];
+
+  // which is on 6th position
+  for(var i = 6; i < firstSet.length; i += 8){
+  incomeDispArray.push(firstSet[i]);
+  }
+
+  // for the perception of corruption
+  var percCorrArray = [];
+
+  // which is on 7th position
+  for(var i = 7; i < firstSet.length; i += 8){
+  percCorrArray.push(firstSet[i]);
+  }
+
+  // making first dict for indexing later on
+  var wellBeingDict = [];
+
+  // linking keys and values in dictionary
+  for(var i = 0; i < 12; i++){
+    wellBeingDict.push({
+      region: firstRegionsArray[i],
+      unemRa: unemRaArray[i], // vraag nog even na hoe je hier procent teken kan hardcoden of zoek het zelf uit.
+      empRa: empRaArray[i],
+      eduSh: eduShArray[i],
+      votersSh: votersShArray[i],
+      socSupp: socSuppArray[i],
+      bbAcc: bbAccArray[i],
+      incomeDisp: incomeDispArray[i],
+      percCorr: percCorrArray[i]
+    });
+  }
+
+  // make json format from the second data set
+  var secondData = JSON.parse(response[1].responseText);
+
+  // create a second regions array, because the order from second dataset is messed up
+  var secondfirstRegionsArray = [];
+
+  // insert twelve regions in array
+  for(var i = 0; i < 12; i ++){
+    secondfirstRegionsArray.push(secondData.structure.dimensions.series[0].values[i]["name"])
+  }
+
+  console.log(firstRegionsArray)
+  console.log(secondfirstRegionsArray)
+  console.log(wellBeingDict)
 };
