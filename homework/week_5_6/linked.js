@@ -3,7 +3,7 @@ window.onload = function() {
 
   // api request for the data
   var wellBeing = "https://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RWB+INCOME_DISP+JOB+EMP_RA+UNEM_RA+EDU38_SH+VOTERS_SH+BB_ACC+SUBJ_SOC_SUPP+SUBJ_PERC_CORR.VALUE/all?startTime=2014&endTime=2014"
-  var income = "http://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RIDD+INEQ+GINI+S80S20A+PVT+PVT6A.VALUE+UP_CI+LO_CI/all?startTime=2009&endTime=2014"
+  var income = "https://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RIDD+INEQ+GINI+S80S20A+PVT+PVT6A.VALUE+UP_CI+LO_CI/all?startTime=2009&endTime=2014"
 
   // request for the queries
   d3.queue()
@@ -27,8 +27,6 @@ function getData(error, response) {
     firstRegionsArray.push(firstData.structure.dimensions.series[0].values[i]["name"])
   }
 
-  // skoopdiewoopdiedoop
-
   // and a list with all the elements from api request
   var firstSet = [];
 
@@ -43,7 +41,7 @@ function getData(error, response) {
   // list for all the unemployment rate values
   var unemRaArray = [];
 
-  // internet value is on 0th position in oecdArray
+  // which is on 0th position
   for (var i = 0; i < firstSet.length; i += 8){
     unemRaArray.push(firstSet[i]);
   }
@@ -51,7 +49,7 @@ function getData(error, response) {
   // for the employment rate values
   var empRaArray = [];
 
-  // voting rate is on 1th position
+  // which is on 1th position
   for(var i = 1; i < firstSet.length; i += 8){
     empRaArray.push(firstSet[i]);
   }
@@ -125,15 +123,78 @@ function getData(error, response) {
   // make json format from the second data set
   var secondData = JSON.parse(response[1].responseText);
 
-  // create a second regions array, because the order from second dataset is messed up
-  var secondfirstRegionsArray = [];
+  // create a second regions array, because the order from second dataset is not the same as the first dataset
+  var secondRegionsArray = [];
 
   // insert twelve regions in array
   for(var i = 0; i < 12; i ++){
-    secondfirstRegionsArray.push(secondData.structure.dimensions.series[0].values[i]["name"])
+    secondRegionsArray.push(secondData.structure.dimensions.series[0].values[i]["name"])
   }
 
-  console.log(firstRegionsArray)
-  console.log(secondfirstRegionsArray)
+  // and a list with all the elements from api request
+  var secondSet = [];
+
+  // push 8 elements in an with strictly values
+  for(var i = 0; i < secondRegionsArray.length; i ++){
+    for(var j = 0; j < 3; j ++){
+      var linking = i + ":" + j + ":0";
+      secondSet.push(secondData.dataSets[0].series[linking].observations["0"]["0"]);
+    }
+  }
+
+  // list for all the unemployment rate values
+  var giniArray = [];
+
+  // internet value is on 0th position in oecdArray
+  for (var i = 0; i < secondSet.length; i += 3){
+    giniArray.push(secondSet[i]);
+  }
+
+  // for the employment rate values
+  var povRaArray = [];
+
+  // voting rate is on 1th position
+  for(var i = 1; i < secondSet.length; i += 3){
+    povRaArray.push(secondSet[i]);
+  }
+
+  // for the share of labour force with at least secondary education
+  var s80s20Array = [];
+
+  // which is on the 2th position
+  for(var i = 2; i < secondSet.length; i += 3){
+    s80s20Array.push(secondSet[i]);
+  }
+
+
+  // making first dict for indexing later on
+  var incomeDict = [];
+
+  // linking keys and values in dictionary
+  for(var i = 0; i < 12; i++){
+    incomeDict.push({
+      region: secondRegionsArray[i],
+      gini: giniArray[i],
+      povRa: povRaArray[i],
+      s80s20: s80s20Array[i],
+    });
+  }
   console.log(wellBeingDict)
+  console.log(incomeDict)
+
+  // console.log(secondfirstRegionsArray)
+  // console.log(secondData)
+
+//   id: "GINI",
+// name: "Gini (at disposable income, after taxes and transfers)"
+//
+// id: "PVT6A",
+// name: "Poverty rate after taxes and transfers, Poverty line 60%"
+//
+// id: "S80S20A",
+// name: "S80/S20 disposable income quintile ratio "
+
+// console.log(secondData.dataSets[0].series["0:0:0"].observations[0]["0"]);
+
+
 };
