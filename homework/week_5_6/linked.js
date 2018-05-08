@@ -1,7 +1,3 @@
-var oecdArray = [];
-
-
-
 // function that will be triggered when the page is loaded
 window.onload = function() {
 
@@ -26,17 +22,21 @@ function getData(error, response) {
   // list for all the regions
   var regionsArray = [];
 
+  // insert twelve regions in array
   for(var i = 0; i < 12; i ++){
     regionsArray.push(data.structure.dimensions.series[0].values[i]["name"])
   }
 
-  // console.log(regionsArray)
-
   // and a list with all the elements from api request
-  // var oecdArray = [];
+  var valuesArray = [];
 
+  // push 8 elements in an with strictly values
   for(var i = 0; i < regionsArray.length; i ++){
-    oecdArray.push(data.dataSets[0].series)
+    for(var j = 0; j < 8; j ++){
+      var linking = i + ":" + j + ":0";
+      valuesArray.push(data.dataSets[0].series[linking].observations["0"]["0"]);
+    }
   }
+
 
 };

@@ -5,6 +5,8 @@
 //            https://bl.ocks.org/zanarmstrong/0b6276e033142ce95f7f374e20f1c1a7
 //            http://bl.ocks.org/LauraCortes/020b0a4dc8e25070a42421382324109d
 //            http://charts.animateddata.co.uk/whatmakesushappy/
+var data;
+var wellBeingDict = [];
 
 // function that will be triggered when the page is loaded
 window.onload = function() {
@@ -21,7 +23,7 @@ window.onload = function() {
     if (error) throw error;
 
     // make json format from the data
-    var data = JSON.parse(response[0].responseText);
+    data = JSON.parse(response[0].responseText);
 
     // list for all the countries
     var countryArray = [];
@@ -81,7 +83,7 @@ window.onload = function() {
     }
 
     // making a dict for indexing later on
-    var wellBeingDict = [];
+    // var wellBeingDict = [];
 
     // linking keys and values in dictionary
     for(var i = 0; i < 30; i++){
