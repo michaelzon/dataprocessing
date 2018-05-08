@@ -30,7 +30,7 @@ function getData(error, response) {
   // and a list with all the elements from api request
   var firstSet = [];
 
-  // push 8 elements in an with strictly values
+  // push 8 elements in an array with strictly values
   for(var i = 0; i < firstRegionsArray.length; i ++){
     for(var j = 0; j < 8; j ++){
       var linking = i + ":" + j + ":0";
@@ -131,10 +131,10 @@ function getData(error, response) {
     secondRegionsArray.push(secondData.structure.dimensions.series[0].values[i]["name"])
   }
 
-  // and a list with all the elements from api request
+  // and a list with all the elements from second api request
   var secondSet = [];
 
-  // push 8 elements in an with strictly values
+  // push 8 elements in an array with strictly values
   for(var i = 0; i < secondRegionsArray.length; i ++){
     for(var j = 0; j < 3; j ++){
       var linking = i + ":" + j + ":0";
@@ -142,30 +142,29 @@ function getData(error, response) {
     }
   }
 
-  // list for all the unemployment rate values
+  // making a list for all Gini values
   var giniArray = [];
 
-  // internet value is on 0th position in oecdArray
+  // which is on 0th position
   for (var i = 0; i < secondSet.length; i += 3){
     giniArray.push(secondSet[i]);
   }
 
-  // for the employment rate values
+  // for the poverty rate
   var povRaArray = [];
 
-  // voting rate is on 1th position
+  // which is on 1th position
   for(var i = 1; i < secondSet.length; i += 3){
     povRaArray.push(secondSet[i]);
   }
 
-  // for the share of labour force with at least secondary education
+  // for the S80/S20 disposable income quintile ratio
   var s80s20Array = [];
 
   // which is on the 2th position
   for(var i = 2; i < secondSet.length; i += 3){
     s80s20Array.push(secondSet[i]);
   }
-
 
   // making first dict for indexing later on
   var incomeDict = [];
@@ -181,20 +180,4 @@ function getData(error, response) {
   }
   console.log(wellBeingDict)
   console.log(incomeDict)
-
-  // console.log(secondfirstRegionsArray)
-  // console.log(secondData)
-
-//   id: "GINI",
-// name: "Gini (at disposable income, after taxes and transfers)"
-//
-// id: "PVT6A",
-// name: "Poverty rate after taxes and transfers, Poverty line 60%"
-//
-// id: "S80S20A",
-// name: "S80/S20 disposable income quintile ratio "
-
-// console.log(secondData.dataSets[0].series["0:0:0"].observations[0]["0"]);
-
-
 };
