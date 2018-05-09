@@ -1,1 +1,17 @@
-  
+.container {
+  display: flex; /* or inline-flex */
+}
+
+.item {
+  order: <integer>; /* default is 0 */
+}
+
+p {
+  font-family: avenir;
+  font-size: 16px;
+}
+
+.textClass {
+    font-family: avenir;
+    font-size: 12px;
+}
