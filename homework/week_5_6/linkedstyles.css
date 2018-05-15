@@ -15,3 +15,33 @@ p {
     font-family: avenir;
     font-size: 12px;
 }
+
+
+/* value is shown in box */
+.d3-tip {
+  line-height: 1;
+  padding: 12px;
+  background: rgba(252, 243, 0, 0.4);
+  color: rgb(0, 0, 0);
+  border-radius: 1px;
+}
+
+/* with a little pointer to the bar */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 18px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(252, 243, 0, 0.4);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* placing the pointer in right position */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}

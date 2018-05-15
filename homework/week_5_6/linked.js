@@ -4,11 +4,15 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var width = 720 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+var wellBeingDict = [];
+
+var independents = ['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'];
+
 // function that will be triggered when the page is loaded
 window.onload = function() {
 
   // api request for the data
-  var wellBeing = "https://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RWB+INCOME_DISP+JOB+EMP_RA+UNEM_RA+EDU38_SH+VOTERS_SH+BB_ACC+SUBJ_SOC_SUPP+SUBJ_PERC_CORR.VALUE/all?startTime=2014&endTime=2014"
+  var wellBeing = "https://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RWB+EMP_RA+UNEM_RA+EDU38_SH+BB_ACC+SUBJ_SOC_SUPP.VALUE/all?startTime=2014&endTime=2014"
   var income = "https://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RIDD+INEQ+GINI+S80S20A+PVT+PVT6A.VALUE+UP_CI+LO_CI/all?startTime=2009&endTime=2014"
 
   // request for the queries
@@ -18,11 +22,11 @@ window.onload = function() {
   .awaitAll(getData);
 
   createWebInfo();
-  createMap();
-  createChart();
 };
 
-function getData(error, response) {
+function getData(error, response, nld) {
+
+  // check if data gets loaded
   if (error) throw error;
 
   // make json format from the first data set
@@ -41,7 +45,7 @@ function getData(error, response) {
 
   // push 8 elements in an array with strictly values
   for(var i = 0; i < firstRegionsArray.length; i ++){
-    for(var j = 0; j < 8; j ++){
+    for(var j = 0; j < 5; j ++){
       var linking = i + ":" + j + ":0";
       firstSet.push(firstData.dataSets[0].series[linking].observations["0"]["0"]);
     }
@@ -50,69 +54,25 @@ function getData(error, response) {
   // list for all the unemployment rate values
   var unemRaArray = [];
 
-  // which is on 0th position
-  for (var i = 0; i < firstSet.length; i += 8){
-    unemRaArray.push(firstSet[i]);
-  }
-
   // for the employment rate values
   var empRaArray = [];
-
-  // which is on 1th position
-  for(var i = 1; i < firstSet.length; i += 8){
-    empRaArray.push(firstSet[i]);
-  }
 
   // for the share of labour force with at least secondary education
   var eduShArray = [];
 
-  // which is on the 2th position
-  for(var i = 2; i < firstSet.length; i += 8){
-    eduShArray.push(firstSet[i]);
-  }
-
-  // for the voter turnout in general election
-  var votersShArray = [];
-
-  // which is on 3th position
-  for(var i = 3; i < firstSet.length; i += 8){
-  votersShArray.push(firstSet[i]);
-  }
-
   // for the perceived social network support values
   var socSuppArray = [];
-
-  // which is on 4th position
-  for(var i = 4; i < firstSet.length; i += 8){
-  socSuppArray.push(firstSet[i]);
-  }
 
   // for the share of households with internet broadband access values
   var bbAccArray = [];
 
-  // which is on 5th position
-  for(var i = 5; i < firstSet.length; i += 8){
-  bbAccArray.push(firstSet[i]);
+  for (var i = 0; i < firstSet.length; i += 5){
+    unemRaArray.push(firstSet[i]);
+    empRaArray.push(firstSet[i+1]);
+    eduShArray.push(firstSet[i+2]);
+    socSuppArray.push(firstSet[i+3]);
+    bbAccArray.push(firstSet[i+4]);
   }
-
-  // for the disposable income per capita values
-  var incomeDispArray = [];
-
-  // which is on 6th position
-  for(var i = 6; i < firstSet.length; i += 8){
-  incomeDispArray.push(firstSet[i]);
-  }
-
-  // for the perception of corruption
-  var percCorrArray = [];
-
-  // which is on 7th position
-  for(var i = 7; i < firstSet.length; i += 8){
-  percCorrArray.push(firstSet[i]);
-  }
-
-  // making first dict for indexing later on
-  var wellBeingDict = [];
 
   // linking keys and values in dictionary
   for(var i = 0; i < 12; i++){
@@ -121,11 +81,8 @@ function getData(error, response) {
       unemRa: unemRaArray[i], // vraag nog even na hoe je hier procent teken kan hardcoden of zoek het zelf uit.
       empRa: empRaArray[i],
       eduSh: eduShArray[i],
-      votersSh: votersShArray[i],
       socSupp: socSuppArray[i],
       bbAcc: bbAccArray[i],
-      incomeDisp: incomeDispArray[i],
-      percCorr: percCorrArray[i]
     });
   }
 
@@ -143,7 +100,7 @@ function getData(error, response) {
   // and a list with all the elements from second api request
   var secondSet = [];
 
-  // push 8 elements in an array with strictly values
+  // push 3 elements in an array with strictly values
   for(var i = 0; i < secondRegionsArray.length; i ++){
     for(var j = 0; j < 3; j ++){
       var linking = i + ":" + j + ":0";
@@ -154,28 +111,19 @@ function getData(error, response) {
   // making a list for all Gini values
   var giniArray = [];
 
-  // which is on 0th position
-  for (var i = 0; i < secondSet.length; i += 3){
-    giniArray.push(secondSet[i]);
-  }
-
   // for the poverty rate
   var povRaArray = [];
-
-  // which is on 1th position
-  for(var i = 1; i < secondSet.length; i += 3){
-    povRaArray.push(secondSet[i]);
-  }
 
   // for the S80/S20 disposable income quintile ratio
   var s80s20Array = [];
 
-  // which is on the 2th position
-  for(var i = 2; i < secondSet.length; i += 3){
-    s80s20Array.push(secondSet[i]);
+  for (var i = 0; i < secondSet.length; i += 3){
+    giniArray.push(secondSet[i]);
+    povRaArray.push(secondSet[i+1]);
+    s80s20Array.push(secondSet[i+2]);
   }
 
-  // making first dict for indexing later on
+  // making second dict for indexing later on
   var incomeDict = [];
 
   // linking keys and values in dictionary
@@ -187,8 +135,12 @@ function getData(error, response) {
       s80s20: s80s20Array[i],
     });
   }
-  console.log(wellBeingDict)
-  console.log(incomeDict)
+
+  // console.log(wellBeingDict)
+  // console.log(incomeDict)
+  createMap(incomeDict)
+  createChart(wellBeingDict);
+
 };
 
 function createWebInfo(){
@@ -197,50 +149,200 @@ function createWebInfo(){
   paragraph = d3.select("header")
   paragraph.append("p").text("Name: Michael Zonneveld")
   paragraph.append("p").text("Studentnummer: 11302984")
-  paragraph.append("p").text("This webpage shows 2 interactive visualizations ")
+  paragraph.append("p").text("This webpage shows (not yet) 2 interactive visualizations ")
 }
 
-function createMap(){
+function createMap(incomeDict, nld){
 
-  var colour = d3.scaleOrdinal(d3.schemeCategory20);
+  // load topojson file
+  d3.json("nld.json", function(error, nld) {
+    if (error) return console.error(error);
+    console.log(nld);
 
-  var projection = d3.geoMercator()
+    // projection so we can display map, path generator formats the projection for svg element
+    svg.append("path")
+        .data(topojson.feature(nld, nld.objects.subunits))
+        .attr("d", d3.geoPath().projection(d3.geoMercator()));
+  });
+
+  // create root svg element
+  var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  // While our data can be stored more efficiently in TopoJSON, we must convert back to GeoJSON for display ???
+  // var subunits = topojson.feature(nld, nld.objects.subunits).features;
+
+  // extract the meaning of projection for code-clearity
+  var projection = d3.geoMercator
       .scale(1)
-      .translate([0, 0]);
+      .translate([width / 2, height / 2]);
 
   var path = d3.geoPath()
-      .projection(projection);
+      .projection(projection)
 
-  var svg = d3.select("#map").append("svg")
+  // binding path element to geojson data, setting 'd' attribute to the path data
+  svg.append("path")
+      .datum(subunits)
+      .attr("d", path)
+
+  // var projection = d3.geo.albers()
+  //   .center([0, 55.4])
+  //   .rotate([4.4, 0])
+  //   .parallels([50, 60])
+  //   .scale(6000)
+  //   .translate([width / 2, height / 2]);
+
+
+  // var colour = d3.scaleOrdinal(d3.schemeCategory20);
+  //
+  // var projection = d3.geoMercator()
+  //     .scale(1)
+  //     .translate([0, 0]);
+  //
+  // var path = d3.geoPath()
+  //     .projection(projection);
+  //
+  // var svg = d3.select("#map")
+  //     .append("svg")
+  //     .attr("width", width)
+  //     .attr("height", height);
+  //
+  // var g = svg.append("g")
+  //
+  // // create tipbox for regions
+  // var regionTip = d3.tip()
+  //     .attr("class", "d3-tip")
+  //     .offset([-10, 0])
+  //     .html(function(d, i){
+  //       return (d)
+  //     })
+  //
+  // svg.call(regionTip)
+  //
+  // d3.json("nld.json", function(error, nld) {
+  //
+  //     var l = topojson.feature(nld, nld.objects.subunits).features[3],
+  //         b = path.bounds(l),
+  //         s = .2 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+  //         t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+  //
+  //     projection
+  //         .scale(s)
+  //         .translate(t);
+  //
+  //     svg.selectAll("path")
+  //         .data(topojson.feature(nld, nld.objects.subunits).features)
+  //         .enter()
+  //         .append("path")
+  //         .attr("d", path)
+  //         .attr("fill", function(d, i) {
+  //           console.log(d.properties.name);  // HIER KNAL JE JE DATA
+  //             return colour(i);
+  //         })
+  //         .attr("class", function(d, i) {
+  //             return d.properties.name;
+  //         });
+  //   });
+}
+
+function createChart(wellBeingDict, region = 0){
+
+  var chartdata = [];
+
+  chartdata.push(wellBeingDict[region]['unemRa'])
+  chartdata.push(wellBeingDict[region]['empRa'])
+  chartdata.push(wellBeingDict[region]['eduSh'])
+  chartdata.push(wellBeingDict[region]['socSupp'])
+  chartdata.push(wellBeingDict[region]['bbAcc'])
+
+  var chartWidth = width - margin.left - margin.right
+  var chartHeight = height - margin.top - margin.bottom
+
+  var barSpace = 5;
+  var barWidth = 30;
+
+  // create scale for width
+  var xScale = d3.scaleBand()
+      .domain(independents)
+      .rangeRound ([0, chartWidth]);
+
+  // and for height
+  var yScale = d3.scaleLinear()
+      .domain([0, 100])
+      .range([chartHeight, 0]);
+
+  // function for creating x-axis later on
+  var xAxis = d3.axisBottom()
+     .scale(xScale);
+
+  // and for y-axis
+  var yAxis = d3.axisLeft()
+     .scale(yScale);
+
+  // creating tip box to show value
+  var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d, i) {
+      return (d)
+      })
+
+  // creating canvas for visualising barchart
+  var svg = d3.select("#chart")
+      .append("svg")
       .attr("width", width)
       .attr("height", height);
 
-  d3.json("nld.json", function(error, nld) {
+    // placing box with value
+    svg.call(tip);
 
-      var l = topojson.feature(nld, nld.objects.subunits).features[3],
-          b = path.bounds(l),
-          s = .2 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
-          t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+  // placing a bar for every data value
+  svg.selectAll("rect")
+      .data(chartdata)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
 
-      projection
-          .scale(s)
-          .translate(t);
+      // shooting bars on my screen
+      .attr("x", function (d, i){
+        return xScale(independents[i]) + margin.left + margin.right;
+      })
 
-      svg.selectAll("path")
-          .data(topojson.feature(nld, nld.objects.subunits).features).enter()
-          .append("path")
-          .attr("d", path)
-          .attr("fill", function(d, i) {
-              return colour(i);
-          })
-          .attr("class", function(d, i) {
-              return d.properties.name;
-          });
-    });
-}
+      .attr("y", function (d, i){
+        return yScale(d)
+      })
 
-function createChart(){
+      // calculating the width of every bar
+      .attr("width", chartWidth / chartdata.length - barSpace)
+
+      // and its height
+      .attr("height", function (d){
+        return chartHeight - yScale(d);
+      })
+
+  // inserting x-axis on the canvas
+  svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(20," + chartHeight + ")")
+      .call(xAxis);
 
 
+  // and the y-axis
+  svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(" + margin.bottom + ",1)")
+      .call(yAxis)
 
+
+};
+
+function update(){
+  // barchart update als je op provincie klikt.
+  // 1 bereken nieuwe scalings
+  // select element die je wil veranderen
+  // data als argument
+  //
 };
