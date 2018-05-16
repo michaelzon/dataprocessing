@@ -1,3 +1,14 @@
+// id: "GINI",
+// name: "Gini (at disposable income, after taxes and transfers)"
+// },
+// {
+// id: "PVT6A",
+// name: "Poverty rate after taxes and transfers, Poverty line 60%"
+// },
+// {
+// id: "S80S20A",
+// name: "S80/S20 disposable income quintile ratio
+
 
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
@@ -5,6 +16,8 @@ var width = 720 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var wellBeingDict = [];
+
+var incomeDict = [];
 
 var independents = ['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'];
 
@@ -127,7 +140,7 @@ function getData(error, response, nld) {
   }
 
   // making second dict for indexing later on
-  var incomeDict = [];
+  // var incomeDict = [];
 
   // linking keys and values in dictionary
   for(var i = 0; i < 12; i++){
@@ -147,7 +160,7 @@ function createMap(incomeData, nld){
 
   var format = d3.format(",");
 
-  console.log(incomeData)
+  // console.log(incomeData)
   // console.log(incomeData[1]['povRa'])
 
   // create tipbox for regions
@@ -159,23 +172,33 @@ function createMap(incomeData, nld){
         var tipBoxDict = {}
         for (i = 0; i < incomeData.length; i ++){
           if(incomeData[i]['region'] == d.properties.name){
-            tipBoxDict[incomeData[i]['region']] = incomeData[i]['povRa']
+            tipBoxDict[incomeData[i]['region']] = incomeData[i]['gini']
           }
         }
 
         // indexing on province name and return its value
-        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + tipBoxDict[d.properties.name] +"</span>";
+        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>GINI: </strong>" + tipBoxDict[d.properties.name] +"</span>";
       })
 
-  // console.log(incomeData)
-  // d3.scale.quantize()
-  // var colorMap = d3.scaleSequential()
-  //               .domain([d3.min(incomeData, function(d) { return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
-  //               .interpolator(d3.interpolateRainbow);
+  povRaColors = []
 
+  for (var i = 0; i < incomeData.length; i ++){
+    povRaColors.push(incomeData[i]['povRa'])
+  }
+  console.log(incomeData)
+  console.log('lkkler',povRaColors)
+  // povRaColors.sort();
+  // povRaColors.reverse();
+  console.log("nogeenkeer", povRaColors)
+
+  // povra"s
+   // 0.213 , 0.16, 0.133, 0.14, 0.127, 0.14, 0.135, 0.167, 0.172, 0.122, 0.135, 0.142
+
+  console.log(incomeData)
   var colorMap = d3.scaleQuantize()
-      .domain([d3.min(incomeData, function(d) {return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
-      .range(colorbrewer.Greens[6]);
+      // .domain([0.213 , 0.16, 0.133, 0.14, 0.127, 0.14, 0.135, 0.167, 0.172, 0.122, 0.135, 0.142])
+      .domain([d3.min(povRaColors), d3.max(povRaColors)])
+      .range(colorbrewer.Greens[3]);
 
   // extract the meaning of projection for code-clearity
   var projection = d3.geoMercator()
@@ -215,13 +238,30 @@ function createMap(incomeData, nld){
             // console.log(d.properties.name)
               return d.properties.name;
           })
-
           // fill them up according to s80s20 ratio
           .attr("fill", function(d, i) {
-            // if (incomeData[i].regio == d.properties.name){
-            // console.log(incomeData[i].s80s20
-              return colorMap(i);
+            for (i = 0; i < incomeData.length; i ++){
+              if(incomeData[i]['region'] == d.properties.name){
+                console.log(incomeData[i]['region'], i)
+                console.log(incomeData[i]['povRa'])
+                console.log(colorMap(incomeData[i]['povRa']))
+                return colorMap(povRaColors[i])
+              }
+            }
           })
+
+
+
+
+          //   if (incomeData[i][region] == d.properties.name){
+          //   // console.log(incomeData[i].s80s20
+          //     return colorMap(i);}
+          // })
+          //
+          // for (i = 0; i < incomeData.length; i ++){
+          //   if(incomeData[i]['region'] == d.properties.name){
+          //     tipBoxDict[incomeData[i]['region']] = incomeData[i]
+          //   }
 
           .style('stroke', 'white')
           .style('stroke-width', 1.5)
@@ -317,7 +357,7 @@ function createChart(wellBeingDict, region = 0){
       .append("rect")
       .attr("class", "bar")
 
-      .attr("fill", function(d, i) { console.log(d)
+      .attr("fill", function(d, i) {
           return colorBars(i);
       })
 
