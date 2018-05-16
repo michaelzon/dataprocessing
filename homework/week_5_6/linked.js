@@ -140,11 +140,8 @@ function getData(error, response, nld) {
     });
   }
 
-  // console.log(wellBeingDict)
-  // console.log(incomeDict)
   createMap(incomeDict, response[2])
   createChart(wellBeingDict);
-
 };
 
 function createWebInfo(){
@@ -159,21 +156,18 @@ function createWebInfo(){
 function createMap(incomeData, nld){
 
   var format = d3.format(",");
-  // console.log("henk:",incomeData[0].region)
+
+  // console.log(incomeData)
 
   // create tipbox for regions
   var regionTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([-10, 0])
-      .html(function(d, i, incomeData){
+      .html(function(d, i){ (console.log(d))
         d.properties.income = 9;
         // console.log(d.properties)
         return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + d.properties.income +"</span>";
       })
-
-      // .html(function(d, i){
-      //   return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + (incomeData, function(d, i) {console.log(d)}) +"</span>";
-      // })
 
   // console.log(incomeData)
   // d3.scale.quantize()
@@ -183,13 +177,6 @@ function createMap(incomeData, nld){
 
   // console.log(color(3.6))
   // console.log(color(4))
-
-
-  // and a function for sequential coloring (colorblind-friendly)
-  // var color = d3.scaleSequential(d3.interpolateRgb("#0000FF","#FF0000"))
-  //               .domain([d3.min(incomeData, function(d) {return d.s80s20}),
-  //                       d3.max(incomeData, function(d) {return d.s80s20})])
-
 
   // extract the meaning of projection for code-clearity
   var projection = d3.geoMercator()
@@ -257,16 +244,16 @@ function createMap(incomeData, nld){
               .style("stroke-width",0.3)
           })
           .on("click", function(d){
-            // console.log(d.properties.name);
-            selectData(d.properties.name, wellBeingDict)
-            update()
-            // update(d.properties.name, wellBeingDict);
-            // createChart(wellBeingDict, d.properties.name)
+            update(wellBeingDict, d.properties.name)
           });
 
 }
 
 function createChart(wellBeingDict, region = 0){
+
+  if (d3.select("#chart").select("svg")){
+    d3.select("#chart").select("svg").remove();
+  }
 
   // console.log(region)
   var chartData = [];
@@ -328,18 +315,20 @@ function createChart(wellBeingDict, region = 0){
       .attr("class", "bar")
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
-
       // shooting bars on my screen
       .attr("x", function (d, i){
         return xScale(independents[i]) + margin.left + margin.right;
       })
-
+      .attr("y", chartHeight)
+      .attr("height", 0)
+      .attr("width", chartWidth / chartData.length - barSpace)
+      .transition().duration(2000)
+      .delay(function (d, i) {
+        return i * 200;
+      })
       .attr("y", function (d, i){
         return yScale(d)
       })
-
-      // calculating the width of every bar
-      .attr("width", chartWidth / chartData.length - barSpace)
 
       // and its height
       .attr("height", function (d){
@@ -361,53 +350,17 @@ function createChart(wellBeingDict, region = 0){
   return(chartData)
 };
 
-function selectData(province, wellBeingDict){
+function update(wellBeingDict, province){
+
+  var rightDataNumber;
 
   // return appropiate number for matching region with data
   for (i = 0; i < firstRegionsArray.length; i ++){
     if (firstRegionsArray[i] == province){
-      return i;
+      rightDataNumber = i;
     }
   }
-};
 
-// province == prop.name
-function update(province, wellBeingDict){
-  // console.log("updatefunctie");
-  console.log("clickprovincie",province);
-  // data filteren op province
-  var rightDataNumber = selectData(); //functie welke provincie bij welke nummer, ittereren, en dan i returnen aan select data
   createChart(wellBeingDict, region = rightDataNumber);
-
-  // barchart update als je op provincie klikt.
-  // 1 bereken nieuwe scalings
-  // select element die je wil veranderen
-  // data als argument
-
-  // console.log(wellBeingDict[0]['region']) // zuidholland
-  // console.log(wellBeingDict[1]['region']) // zuidholland
-  // console.log(wellBeingDict[2]['region']) // zuidholland
-  // console.log(wellBeingDict[3]['region']) // zuidholland
-  // console.log(wellBeingDict[4]['region']) // zuidholland
-  // console.log(wellBeingDict[5]['region']) // zuidholland
-  // console.log(wellBeingDict[6]['region']) // zuidholland
-  // console.log(wellBeingDict[7]['region']) // zuidholland
-  // console.log(wellBeingDict[8]['region']) // zuidholland
-  // console.log(wellBeingDict[9]['region']) // zuidholland
-  // console.log(wellBeingDict[10]['region']) // zuidholland
-  // console.log(wellBeingDict[11]['region']) // zuidholland
-
-  // console.log(region)
-  var newBars = [];
-
-  // newBars.push(wellBeingDict[region]['unemRa'])
-  // newBars.push(wellBeingDict[region]['empRa'])
-  // newBars.push(wellBeingDict[region]['eduSh'])
-  // newBars.push(wellBeingDict[region]['socSupp'])
-  // newBars.push(wellBeingDict[region]['bbAcc'])
-
-  console.log(newBars)
-
-
 
 };
