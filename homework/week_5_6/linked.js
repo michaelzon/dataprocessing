@@ -162,8 +162,12 @@ function createMap(incomeData, nld){
       .attr("class", "d3-tip")
       .offset([-10, 0])
       .html(function(d, i){
-        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + function(d, i) {console.log(d))} +"</span>";
+        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + (incomeData, function(d, i) {console.log(d)}) +"</span>";
       })
+
+      // .html(function(d, i){
+      //   return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + (incomeData, function(d, i) {console.log(d)}) +"</span>";
+      // })
 
   // console.log(incomeData)
   var color = d3.scaleThreshold()
@@ -228,25 +232,25 @@ function createMap(incomeData, nld){
           .style('stroke', 'white')
           .style('stroke-width', 1.5)
           .style("opacity",0.8)
-          // tooltips
-            .style("stroke","white")
-            .style('stroke-width', 0.3)
-            .on('mouseover',function(d){
-              regionTip.show(d);
-
-              d3.select(this)
-                .style("opacity", 1)
-                .style("stroke","white")
-                .style("stroke-width",3);
-            })
-            .on('mouseout', function(d){
-              regionTip.hide(d);
-
-              d3.select(this)
-                .style("opacity", 0.8)
-                .style("stroke","white")
-                .style("stroke-width",0.3);
-            });
+          .style("stroke","white")
+          .style('stroke-width', 0.3)
+          .on('mouseover',function(d){
+            regionTip.show(d);
+            d3.select(this)
+              .style("opacity", 1)
+              .style("stroke","white")
+              .style("stroke-width",3)
+          })
+          .on('mouseout', function(d){
+            regionTip.hide(d);
+            d3.select(this)
+              .style("opacity", 0.8)
+              .style("stroke","white")
+              .style("stroke-width",0.3)
+          })
+          .on("click", function(d){
+            update(d.properties.name);
+          });
 
     });
 
@@ -384,10 +388,11 @@ function createChart(wellBeingDict, region = 0){
 
 };
 
-function update(region){
+function update(province){
   // barchart update als je op provincie klikt.
   // 1 bereken nieuwe scalings
   // select element die je wil veranderen
   // data als argument
-  //
+
+
 };
