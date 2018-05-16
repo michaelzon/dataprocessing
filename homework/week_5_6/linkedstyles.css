@@ -16,6 +16,11 @@ p {
     font-size: 12px;
 }
 
+.names {
+fill: none;
+stroke: #fff;
+stroke-linejoin: round;
+}
 
 /* value is shown in box */
 .d3-tip {

@@ -138,7 +138,7 @@ function getData(error, response, nld) {
 
   // console.log(wellBeingDict)
   // console.log(incomeDict)
-  createMap(incomeDict)
+  createMap(incomeDict, nld)
   createChart(wellBeingDict);
 
 };
@@ -152,101 +152,146 @@ function createWebInfo(){
   paragraph.append("p").text("This webpage shows (not yet) 2 interactive visualizations ")
 }
 
-function createMap(incomeDict, nld){
+function createMap(incomeData, nld){
 
-  // load topojson file
-  d3.json("nld.json", function(error, nld) {
-    if (error) return console.error(error);
-    console.log(nld);
+  var format = d3.format(",");
+  // console.log("henk:",incomeData[0].region)
 
-    // projection so we can display map, path generator formats the projection for svg element
-    svg.append("path")
-        .data(topojson.feature(nld, nld.objects.subunits))
-        .attr("d", d3.geoPath().projection(d3.geoMercator()));
-  });
+  // create tipbox for regions
+  var regionTip = d3.tip()
+      .attr("class", "d3-tip")
+      .offset([-10, 0])
+      .html(function(d, i){
+        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + function(d, i) {console.log(d))} +"</span>";
+      })
 
-  // create root svg element
-  var svg = d3.select("#map").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+  // console.log(incomeData)
+  var color = d3.scaleThreshold()
+                .domain([d3.min(incomeData, function(d) {return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
+                .range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"])
 
-  // While our data can be stored more efficiently in TopoJSON, we must convert back to GeoJSON for display ???
-  // var subunits = topojson.feature(nld, nld.objects.subunits).features;
+  // and a function for sequential coloring (colorblind-friendly)
+  // var color = d3.scaleSequential(d3.interpolateRgb("#0000FF","#FF0000"))
+  //               .domain([d3.min(incomeData, function(d) {return d.s80s20}),
+  //                       d3.max(incomeData, function(d) {return d.s80s20})])
+
 
   // extract the meaning of projection for code-clearity
-  var projection = d3.geoMercator
+  var projection = d3.geoMercator()
       .scale(1)
-      .translate([width / 2, height / 2]);
+      .translate([0, 0]);
 
   var path = d3.geoPath()
-      .projection(projection)
+      .projection(projection);
 
-  // binding path element to geojson data, setting 'd' attribute to the path data
-  svg.append("path")
-      .datum(subunits)
-      .attr("d", path)
+  // create root svg element
+  var svg = d3.select("#map")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
 
-  // var projection = d3.geo.albers()
-  //   .center([0, 55.4])
-  //   .rotate([4.4, 0])
-  //   .parallels([50, 60])
-  //   .scale(6000)
-  //   .translate([width / 2, height / 2]);
+  svg.call(regionTip)
 
+  // projection so we can display map, path generator formats the projection for svg element
+  d3.json("nld.json", function(error, nld) {
 
-  // var colour = d3.scaleOrdinal(d3.schemeCategory20);
-  //
-  // var projection = d3.geoMercator()
-  //     .scale(1)
-  //     .translate([0, 0]);
-  //
-  // var path = d3.geoPath()
-  //     .projection(projection);
-  //
-  // var svg = d3.select("#map")
-  //     .append("svg")
-  //     .attr("width", width)
-  //     .attr("height", height);
-  //
-  // var g = svg.append("g")
-  //
-  // // create tipbox for regions
-  // var regionTip = d3.tip()
-  //     .attr("class", "d3-tip")
-  //     .offset([-10, 0])
-  //     .html(function(d, i){
-  //       return (d)
-  //     })
-  //
-  // svg.call(regionTip)
-  //
-  // d3.json("nld.json", function(error, nld) {
-  //
-  //     var l = topojson.feature(nld, nld.objects.subunits).features[3],
-  //         b = path.bounds(l),
-  //         s = .2 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
-  //         t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
-  //
-  //     projection
-  //         .scale(s)
-  //         .translate(t);
-  //
-  //     svg.selectAll("path")
-  //         .data(topojson.feature(nld, nld.objects.subunits).features)
-  //         .enter()
-  //         .append("path")
-  //         .attr("d", path)
-  //         .attr("fill", function(d, i) {
-  //           console.log(d.properties.name);  // HIER KNAL JE JE DATA
-  //             return colour(i);
-  //         })
-  //         .attr("class", function(d, i) {
-  //             return d.properties.name;
-  //         });
-  //   });
+      var l = topojson.feature(nld, nld.objects.subunits).features[3],
+          b = path.bounds(l),
+          s = .2 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+          t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+
+      projection
+          .scale(s)
+          .translate(t);
+
+    // svg.append("g")
+      svg.selectAll("path")
+          .data(topojson.feature(nld, nld.objects.subunits).features)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .attr("id", "region")   // adding id's for clicking function
+
+          // return name of the provinces
+          .attr("class", function(d, i) {
+            // console.log(d.properties.name)
+              return d.properties.name;
+          })
+
+          // fill them up according to s80s20 ratio
+          .attr("fill", function(d, i) {
+            // if (incomeData[i].regio == d.properties.name){
+            // console.log(incomeData[i].s80s20
+              return color(i);
+          })
+
+          .style('stroke', 'white')
+          .style('stroke-width', 1.5)
+          .style("opacity",0.8)
+          // tooltips
+            .style("stroke","white")
+            .style('stroke-width', 0.3)
+            .on('mouseover',function(d){
+              regionTip.show(d);
+
+              d3.select(this)
+                .style("opacity", 1)
+                .style("stroke","white")
+                .style("stroke-width",3);
+            })
+            .on('mouseout', function(d){
+              regionTip.hide(d);
+
+              d3.select(this)
+                .style("opacity", 0.8)
+                .style("stroke","white")
+                .style("stroke-width",0.3);
+            });
+
+    });
+
+    // load topojson file
+    // d3.json("nld.json", function(error, nld) {
+    //   if (error) return console.error(error);
+    //   console.log(nld);
+    //
+    //   // projection so we can display map, path generator formats the projection for svg element
+    //   svg.append("path")
+    //       .datum(topojson.feature(nld, nld.objects.subunits))
+    //       .attr("d", d3.geoPath().projection(d3.geoMercator()));
+    // });
+    //
+    // // create root svg element
+    // var svg = d3.select("#map").append("svg")
+    //   .attr("width", width)
+    //   .attr("height", height);
+    //
+    // // While our data can be stored more efficiently in TopoJSON, we must convert back to GeoJSON for display ???
+    // var subunits = topojson.feature(nld, nld.objects.subunits).features;
+    //
+    // // extract the meaning of projection for code-clearity
+    // var projection = d3.geoMercator
+    //     .scale(500)
+    //     .translate([width / 2, height / 2]);
+    //
+    // var path = d3.geoPath()
+    //     .projection(projection)
+    //
+    // // binding path element to geojson data, setting 'd' attribute to the path data
+    // svg.append("path")
+    //     .datum(subunits)
+    //     .attr("d", path)
+    //
+    // var projection = d3.geo.albers()
+    //   .center([0, 55.4])
+    //   .rotate([4.4, 0])
+    //   .parallels([50, 60])
+    //   .scale(6000)
+    //   .translate([width / 2, height / 2]);
 }
 
 function createChart(wellBeingDict, region = 0){
+  // console.log(wellBeingDict)
 
   var chartdata = [];
 
@@ -339,7 +384,7 @@ function createChart(wellBeingDict, region = 0){
 
 };
 
-function update(){
+function update(region){
   // barchart update als je op provincie klikt.
   // 1 bereken nieuwe scalings
   // select element die je wil veranderen

@@ -48,30 +48,6 @@
 			}, {
 				"type": "Polygon",
 				"properties": {
-					"name": "Saba"
-				},
-				"arcs": [
-					[22]
-				]
-			}, {
-				"type": "Polygon",
-				"properties": {
-					"name": "St. Eustatius"
-				},
-				"arcs": [
-					[23]
-				]
-			}, {
-				"type": "Polygon",
-				"properties": {
-					"name": "Bonaire"
-				},
-				"arcs": [
-					[24]
-				]
-			}, {
-				"type": "Polygon",
-				"properties": {
 					"name": "Drenthe"
 				},
 				"arcs": [
@@ -123,7 +99,7 @@
 			}, {
 				"type": "Polygon",
 				"properties": {
-					"name": "Limburg"
+					"name": "Limburg (NL)"
 				},
 				"arcs": [
 					[45, -2, -41]
