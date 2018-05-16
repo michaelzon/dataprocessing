@@ -8,6 +8,9 @@ var wellBeingDict = [];
 
 var independents = ['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'];
 
+// list for all the regions
+var firstRegionsArray = [];
+
 // function that will be triggered when the page is loaded
 window.onload = function() {
 
@@ -19,6 +22,7 @@ window.onload = function() {
   d3.queue()
   .defer(d3.request, wellBeing)
   .defer(d3.request, income)
+  .defer(d3.json, "nld.json") // this is now response 2
   .awaitAll(getData);
 
   createWebInfo();
@@ -32,8 +36,8 @@ function getData(error, response, nld) {
   // make json format from the first data set
   var firstData = JSON.parse(response[0].responseText);
 
-  // list for all the regions
-  var firstRegionsArray = [];
+  // // list for all the regions
+  // var firstRegionsArray = [];
 
   // insert twelve regions in array
   for(var i = 0; i < 12; i ++){
@@ -138,7 +142,7 @@ function getData(error, response, nld) {
 
   // console.log(wellBeingDict)
   // console.log(incomeDict)
-  createMap(incomeDict, nld)
+  createMap(incomeDict, response[2])
   createChart(wellBeingDict);
 
 };
@@ -161,8 +165,10 @@ function createMap(incomeData, nld){
   var regionTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([-10, 0])
-      .html(function(d, i){
-        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + (incomeData, function(d, i) {console.log(d)}) +"</span>";
+      .html(function(d, i, incomeData){
+        d.properties.income = 9;
+        // console.log(d.properties)
+        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + d.properties.income +"</span>";
       })
 
       // .html(function(d, i){
@@ -170,9 +176,14 @@ function createMap(incomeData, nld){
       // })
 
   // console.log(incomeData)
-  var color = d3.scaleThreshold()
-                .domain([d3.min(incomeData, function(d) {return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
-                .range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"])
+  // d3.scale.quantize()
+  var color = d3.scaleSequential()
+                .domain([d3.min(incomeData, function(d) { return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
+                .interpolator(d3.interpolateRainbow);
+
+  // console.log(color(3.6))
+  // console.log(color(4))
+
 
   // and a function for sequential coloring (colorblind-friendly)
   // var color = d3.scaleSequential(d3.interpolateRgb("#0000FF","#FF0000"))
@@ -195,9 +206,6 @@ function createMap(incomeData, nld){
       .attr("height", height);
 
   svg.call(regionTip)
-
-  // projection so we can display map, path generator formats the projection for svg element
-  d3.json("nld.json", function(error, nld) {
 
       var l = topojson.feature(nld, nld.objects.subunits).features[3],
           b = path.bounds(l),
@@ -249,61 +257,27 @@ function createMap(incomeData, nld){
               .style("stroke-width",0.3)
           })
           .on("click", function(d){
-            update(d.properties.name);
+            // console.log(d.properties.name);
+            selectData(d.properties.name, wellBeingDict)
+            update()
+            // update(d.properties.name, wellBeingDict);
+            // createChart(wellBeingDict, d.properties.name)
           });
 
-    });
-
-    // load topojson file
-    // d3.json("nld.json", function(error, nld) {
-    //   if (error) return console.error(error);
-    //   console.log(nld);
-    //
-    //   // projection so we can display map, path generator formats the projection for svg element
-    //   svg.append("path")
-    //       .datum(topojson.feature(nld, nld.objects.subunits))
-    //       .attr("d", d3.geoPath().projection(d3.geoMercator()));
-    // });
-    //
-    // // create root svg element
-    // var svg = d3.select("#map").append("svg")
-    //   .attr("width", width)
-    //   .attr("height", height);
-    //
-    // // While our data can be stored more efficiently in TopoJSON, we must convert back to GeoJSON for display ???
-    // var subunits = topojson.feature(nld, nld.objects.subunits).features;
-    //
-    // // extract the meaning of projection for code-clearity
-    // var projection = d3.geoMercator
-    //     .scale(500)
-    //     .translate([width / 2, height / 2]);
-    //
-    // var path = d3.geoPath()
-    //     .projection(projection)
-    //
-    // // binding path element to geojson data, setting 'd' attribute to the path data
-    // svg.append("path")
-    //     .datum(subunits)
-    //     .attr("d", path)
-    //
-    // var projection = d3.geo.albers()
-    //   .center([0, 55.4])
-    //   .rotate([4.4, 0])
-    //   .parallels([50, 60])
-    //   .scale(6000)
-    //   .translate([width / 2, height / 2]);
 }
 
 function createChart(wellBeingDict, region = 0){
-  // console.log(wellBeingDict)
 
-  var chartdata = [];
+  // console.log(region)
+  var chartData = [];
 
-  chartdata.push(wellBeingDict[region]['unemRa'])
-  chartdata.push(wellBeingDict[region]['empRa'])
-  chartdata.push(wellBeingDict[region]['eduSh'])
-  chartdata.push(wellBeingDict[region]['socSupp'])
-  chartdata.push(wellBeingDict[region]['bbAcc'])
+  chartData.push(wellBeingDict[region]['unemRa'])
+  chartData.push(wellBeingDict[region]['empRa'])
+  chartData.push(wellBeingDict[region]['eduSh'])
+  chartData.push(wellBeingDict[region]['socSupp'])
+  chartData.push(wellBeingDict[region]['bbAcc'])
+
+  // console.log("chartdata:",chartData)
 
   var chartWidth = width - margin.left - margin.right
   var chartHeight = height - margin.top - margin.bottom
@@ -348,7 +322,7 @@ function createChart(wellBeingDict, region = 0){
 
   // placing a bar for every data value
   svg.selectAll("rect")
-      .data(chartdata)
+      .data(chartData)
       .enter()
       .append("rect")
       .attr("class", "bar")
@@ -365,7 +339,7 @@ function createChart(wellBeingDict, region = 0){
       })
 
       // calculating the width of every bar
-      .attr("width", chartWidth / chartdata.length - barSpace)
+      .attr("width", chartWidth / chartData.length - barSpace)
 
       // and its height
       .attr("height", function (d){
@@ -378,21 +352,62 @@ function createChart(wellBeingDict, region = 0){
       .attr("transform", "translate(20," + chartHeight + ")")
       .call(xAxis);
 
-
   // and the y-axis
   svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate(" + margin.bottom + ",1)")
       .call(yAxis)
 
-
+  return(chartData)
 };
 
-function update(province){
+function selectData(province, wellBeingDict){
+
+  // return appropiate number for matching region with data
+  for (i = 0; i < firstRegionsArray.length; i ++){
+    if (firstRegionsArray[i] == province){
+      return i;
+    }
+  }
+};
+
+// province == prop.name
+function update(province, wellBeingDict){
+  // console.log("updatefunctie");
+  console.log("clickprovincie",province);
+  // data filteren op province
+  var rightDataNumber = selectData(); //functie welke provincie bij welke nummer, ittereren, en dan i returnen aan select data
+  createChart(wellBeingDict, region = rightDataNumber);
+
   // barchart update als je op provincie klikt.
   // 1 bereken nieuwe scalings
   // select element die je wil veranderen
   // data als argument
+
+  // console.log(wellBeingDict[0]['region']) // zuidholland
+  // console.log(wellBeingDict[1]['region']) // zuidholland
+  // console.log(wellBeingDict[2]['region']) // zuidholland
+  // console.log(wellBeingDict[3]['region']) // zuidholland
+  // console.log(wellBeingDict[4]['region']) // zuidholland
+  // console.log(wellBeingDict[5]['region']) // zuidholland
+  // console.log(wellBeingDict[6]['region']) // zuidholland
+  // console.log(wellBeingDict[7]['region']) // zuidholland
+  // console.log(wellBeingDict[8]['region']) // zuidholland
+  // console.log(wellBeingDict[9]['region']) // zuidholland
+  // console.log(wellBeingDict[10]['region']) // zuidholland
+  // console.log(wellBeingDict[11]['region']) // zuidholland
+
+  // console.log(region)
+  var newBars = [];
+
+  // newBars.push(wellBeingDict[region]['unemRa'])
+  // newBars.push(wellBeingDict[region]['empRa'])
+  // newBars.push(wellBeingDict[region]['eduSh'])
+  // newBars.push(wellBeingDict[region]['socSupp'])
+  // newBars.push(wellBeingDict[region]['bbAcc'])
+
+  console.log(newBars)
+
 
 
 };
