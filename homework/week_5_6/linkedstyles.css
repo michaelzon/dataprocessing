@@ -6,6 +6,10 @@
   order: <integer>; /* default is 0 */
 }
 
+h1 {
+  font-family: avenir;
+}
+
 p {
   font-family: avenir;
   font-size: 16px;

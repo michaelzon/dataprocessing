@@ -3,9 +3,10 @@ Studentnumber: 11302984
 Date:      X/05/2018 -->
 
 <!DOCTYPE html>
-<html>
+<html lang = "en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="linkedstyles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script type="text/javascript" src="jslibs/d3.v4.js"></script>
@@ -28,17 +29,38 @@ Date:      X/05/2018 -->
 
     <title> LINKED. </title>
     <header> </header>
+    <ul class="nav nav-tabs">
+  <li class="active"><a href="#">Home</a></li>
+  <li><a href="#">Storytelling</a></li>
+  <li><a href="#">Design choices</a></li>
+  <li><a href="#">About the data</a></li>
+</ul>
   </head>
     <body>
+      <div class="container-fluid">
+        <div class="well">
+          <h1>Titel of webpage</h1></br>
+          <p>Name: Michael Zonneveld</p>
+          <p>Studentnumber: 11302984</p>
+          <p>This webpage shows (not yet) 2 interactive visualizations</p></br>
+        </div>
+      </div>
         <div class="row">
-          <div class="vis" id="map">
+          <div class="col-*-*" id="map">
           </div>
-          <div class="vis" id="chart">
+          <div class="col-*-*" id="chart">
           </div>
         </div>
         <div class="row">
           <div class="col-sm" id="mapdes">
-            graph uitleg
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> Update map </button>
+              <ul class="dropdown-menu">
+                <li><a href="#">Variable 1</a></li>
+                <li><a href="#">Variable 2</a></li>
+                <li><a href="#">Variable 3</a></li>
+              </ul>
+            </div>
           </div>
           <div class="col-sm" id="chartdes">
             barchart uitleg

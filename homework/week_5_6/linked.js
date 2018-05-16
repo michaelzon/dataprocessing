@@ -25,7 +25,6 @@ window.onload = function() {
   .defer(d3.json, "nld.json") // this is now response 2
   .awaitAll(getData);
 
-  createWebInfo();
 };
 
 function getData(error, response, nld) {
@@ -143,15 +142,6 @@ function getData(error, response, nld) {
   createMap(incomeDict, response[2])
   createChart(wellBeingDict);
 };
-
-function createWebInfo(){
-
-  // writing information to webpage per paragraph
-  paragraph = d3.select("header")
-  paragraph.append("p").text("Name: Michael Zonneveld")
-  paragraph.append("p").text("Studentnummer: 11302984")
-  paragraph.append("p").text("This webpage shows (not yet) 2 interactive visualizations ")
-}
 
 function createMap(incomeData, nld){
 
