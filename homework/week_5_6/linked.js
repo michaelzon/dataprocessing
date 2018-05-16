@@ -157,16 +157,24 @@ function createMap(incomeData, nld){
 
   var format = d3.format(",");
 
-  // console.log(incomeData)
+  console.log(incomeData)
+  // console.log(incomeData[1]['povRa'])
 
   // create tipbox for regions
   var regionTip = d3.tip()
       .attr("class", "d3-tip")
       .offset([-10, 0])
-      .html(function(d, i){ (console.log(d))
-        d.properties.income = 9;
-        // console.log(d.properties)
-        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + d.properties.income +"</span>";
+      .html(function(d, i){
+
+        var tipBoxDict = {}
+        for (i = 0; i < incomeData.length; i ++){
+          if(incomeData[i]['region'] == d.properties.name){
+            tipBoxDict[incomeData[i]['region']] = incomeData[i]['povRa']
+          }
+        }
+
+        // indexing on province name and return its value
+        return "<strong>Region: </strong>" + d.properties.name + "<br><strong>Poverty rate: </strong>" + tipBoxDict[d.properties.name] +"</span>";
       })
 
   // console.log(incomeData)
@@ -174,9 +182,6 @@ function createMap(incomeData, nld){
   var color = d3.scaleSequential()
                 .domain([d3.min(incomeData, function(d) { return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
                 .interpolator(d3.interpolateRainbow);
-
-  // console.log(color(3.6))
-  // console.log(color(4))
 
   // extract the meaning of projection for code-clearity
   var projection = d3.geoMercator()
