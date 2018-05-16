@@ -169,9 +169,13 @@ function createMap(incomeData, nld){
 
   // console.log(incomeData)
   // d3.scale.quantize()
-  var color = d3.scaleSequential()
-                .domain([d3.min(incomeData, function(d) { return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
-                .interpolator(d3.interpolateRainbow);
+  // var colorMap = d3.scaleSequential()
+  //               .domain([d3.min(incomeData, function(d) { return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
+  //               .interpolator(d3.interpolateRainbow);
+
+  var colorMap = d3.scaleQuantize()
+      .domain([d3.min(incomeData, function(d) {return d.s80s20}), d3.max(incomeData, function(d) {return d.s80s20})])
+      .range(colorbrewer.Greens[6]);
 
   // extract the meaning of projection for code-clearity
   var projection = d3.geoMercator()
@@ -216,7 +220,7 @@ function createMap(incomeData, nld){
           .attr("fill", function(d, i) {
             // if (incomeData[i].regio == d.properties.name){
             // console.log(incomeData[i].s80s20
-              return color(i);
+              return colorMap(i);
           })
 
           .style('stroke', 'white')
@@ -299,6 +303,10 @@ function createChart(wellBeingDict, region = 0){
       .attr("width", width)
       .attr("height", height);
 
+  var colorBars = d3.scaleQuantize()
+      .domain([0, 5])
+      .range(colorbrewer.Blues[5]);
+
     // placing box with value
     svg.call(tip);
 
@@ -308,6 +316,11 @@ function createChart(wellBeingDict, region = 0){
       .enter()
       .append("rect")
       .attr("class", "bar")
+
+      .attr("fill", function(d, i) { console.log(d)
+          return colorBars(i);
+      })
+
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
       // shooting bars on my screen
