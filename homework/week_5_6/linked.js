@@ -160,9 +160,6 @@ function createMap(incomeData, nld){
 
   var format = d3.format(",");
 
-  // console.log(incomeData)
-  // console.log(incomeData[1]['povRa'])
-
   // create tipbox for regions
   var regionTip = d3.tip()
       .attr("class", "d3-tip")
@@ -181,23 +178,23 @@ function createMap(incomeData, nld){
       })
 
   povRaColors = []
+  s80s20Colors = []
 
   for (var i = 0; i < incomeData.length; i ++){
     povRaColors.push(incomeData[i]['povRa'])
+    s80s20Colors.push(incomeData[i]['s80s20'])
   }
-  console.log(incomeData)
-  console.log('lkkler',povRaColors)
-  // povRaColors.sort();
-  // povRaColors.reverse();
-  console.log("nogeenkeer", povRaColors)
 
-  // povra"s
-   // 0.213 , 0.16, 0.133, 0.14, 0.127, 0.14, 0.135, 0.167, 0.172, 0.122, 0.135, 0.142
+  console.log(s80s20Colors)
 
-  console.log(incomeData)
-  var colorMap = d3.scaleQuantize()
-      // .domain([0.213 , 0.16, 0.133, 0.14, 0.127, 0.14, 0.135, 0.167, 0.172, 0.122, 0.135, 0.142])
+  // coloring map according to poverty rate
+  var colorMapPovRa = d3.scaleQuantize()
       .domain([d3.min(povRaColors), d3.max(povRaColors)])
+      .range(colorbrewer.Greens[3]);
+
+  // // and another coloring for s80s20 quantile ratio
+  var colorMaps80s20 = d3.scaleQuantize()
+      .domain([d3.min(s80s20Colors), d3.max(s80s20Colors)])
       .range(colorbrewer.Greens[3]);
 
   // extract the meaning of projection for code-clearity
@@ -238,63 +235,60 @@ function createMap(incomeData, nld){
             // console.log(d.properties.name)
               return d.properties.name;
           })
-          // fill them up according to s80s20 ratio
+          // fill them up according to poverty rate
           .attr("fill", function(d, i) {
             for (i = 0; i < incomeData.length; i ++){
               if(incomeData[i]['region'] == d.properties.name){
-                console.log(incomeData[i]['region'], i)
-                console.log(incomeData[i]['povRa'])
-                console.log(colorMap(incomeData[i]['povRa']))
-                return colorMap(povRaColors[i])
+
+                if (dropdown )
+
+                return colorMaps80s20(s80s20Colors[i])
+
+                else
+
+                return andere kleuren
+
+                // miss hier nog een if statement met click functie, die dan zorgt voor de andere kleuren.
               }
             }
           })
 
-
-
-
-          //   if (incomeData[i][region] == d.properties.name){
-          //   // console.log(incomeData[i].s80s20
-          //     return colorMap(i);}
-          // })
-          //
-          // for (i = 0; i < incomeData.length; i ++){
-          //   if(incomeData[i]['region'] == d.properties.name){
-          //     tipBoxDict[incomeData[i]['region']] = incomeData[i]
-          //   }
-
-          .style('stroke', 'white')
+          // creating thick borders between provinces and even thicker when touched
+          .style('stroke', 'black')
           .style('stroke-width', 1.5)
           .style("opacity",0.8)
-          .style("stroke","white")
-          .style('stroke-width', 0.3)
+          .style("stroke","black")
+          .style('stroke-width', 0.7)
           .on('mouseover',function(d){
             regionTip.show(d);
             d3.select(this)
               .style("opacity", 1)
-              .style("stroke","white")
+              .style("stroke","black")
               .style("stroke-width",3)
           })
           .on('mouseout', function(d){
             regionTip.hide(d);
             d3.select(this)
               .style("opacity", 0.8)
-              .style("stroke","white")
-              .style("stroke-width",0.3)
+              .style("stroke","black")
+              .style("stroke-width",0.7)
           })
+
+          // update the barchart with corresponding province!
           .on("click", function(d){
-            update(wellBeingDict, d.properties.name)
+            updateChart(wellBeingDict, d.properties.name)
           });
 
 }
 
 function createChart(wellBeingDict, region = 0){
 
+  // remove current svg element if another is added
   if (d3.select("#chart").select("svg")){
     d3.select("#chart").select("svg").remove();
   }
 
-  // console.log(region)
+  // creating list with data for chart
   var chartData = [];
 
   chartData.push(wellBeingDict[region]['unemRa'])
@@ -302,8 +296,6 @@ function createChart(wellBeingDict, region = 0){
   chartData.push(wellBeingDict[region]['eduSh'])
   chartData.push(wellBeingDict[region]['socSupp'])
   chartData.push(wellBeingDict[region]['bbAcc'])
-
-  // console.log("chartdata:",chartData)
 
   var chartWidth = width - margin.left - margin.right
   var chartHeight = height - margin.top - margin.bottom
@@ -343,12 +335,13 @@ function createChart(wellBeingDict, region = 0){
       .attr("width", width)
       .attr("height", height);
 
+  // colorfunction with colorbrewer for those who suffer from bad eyes
   var colorBars = d3.scaleQuantize()
       .domain([0, 5])
-      .range(colorbrewer.Blues[5]);
+      .range(colorbrewer.BrBG[5]);
 
-    // placing box with value
-    svg.call(tip);
+  // placing box with value that is shown in bar
+  svg.call(tip);
 
   // placing a bar for every data value
   svg.selectAll("rect")
@@ -357,28 +350,33 @@ function createChart(wellBeingDict, region = 0){
       .append("rect")
       .attr("class", "bar")
 
+      // color the bars
       .attr("fill", function(d, i) {
           return colorBars(i);
       })
 
+      // showing box
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
-      // shooting bars on my screen
+
+      // shooting bars in the chart with padding
       .attr("x", function (d, i){
         return xScale(independents[i]) + margin.left + margin.right;
       })
       .attr("y", chartHeight)
-      .attr("height", 0)
       .attr("width", chartWidth / chartData.length - barSpace)
+
+      // make them move slick
       .transition().duration(2000)
       .delay(function (d, i) {
         return i * 200;
       })
+
+      // bars going up
       .attr("y", function (d, i){
         return yScale(d)
       })
 
-      // and its height
       .attr("height", function (d){
         return chartHeight - yScale(d);
       })
@@ -395,20 +393,59 @@ function createChart(wellBeingDict, region = 0){
       .attr("transform", "translate(" + margin.bottom + ",1)")
       .call(yAxis)
 
-  return(chartData)
+      // dit doet niks volgensmij:
+  // return(chartData)
 };
 
-function update(wellBeingDict, province){
+function updateChart(wellBeingDict, province){
 
   var rightDataNumber;
 
-  // return appropiate number for matching region with data
+  // return appropiate number for matching province with data
   for (i = 0; i < firstRegionsArray.length; i ++){
     if (firstRegionsArray[i] == province){
       rightDataNumber = i;
     }
   }
 
+  // calling the updated chart
   createChart(wellBeingDict, region = rightDataNumber);
 
 };
+
+// function updateColors(){
+//
+//   var basic_choropleth = new Datamap({
+//   element: document.getElementById("basic_choropleth"),
+//   projection: 'mercator',
+//   fills: {
+//     defaultFill: "#ABDDA4",
+//     authorHasTraveledTo: "#fa0fa0"
+//   },
+//   data: {
+//     USA: { fillKey: "authorHasTraveledTo" },
+//     JPN: { fillKey: "authorHasTraveledTo" },
+//     ITA: { fillKey: "authorHasTraveledTo" },
+//     CRI: { fillKey: "authorHasTraveledTo" },
+//     KOR: { fillKey: "authorHasTraveledTo" },
+//     DEU: { fillKey: "authorHasTraveledTo" },
+//   }
+//   });
+//
+//   // and another coloring for s80s20 quantile ratio
+//   var colorMaps80s20 = d3.scaleQuantize()
+//       .domain([d3.min(s80s20Colors), d3.max(s80s20Colors)])
+//       .range(colorbrewer.Greens[3]);
+//
+//   window.setInterval(function() {
+//     basic_choropleth.updateChoropleth({
+//       USA: colors(Math.random() * 10),
+//       RUS: colors(Math.random() * 100),
+//       AUS: { fillKey: 'authorHasTraveledTo' },
+//       BRA: colors(Math.random() * 50),
+//       CAN: colors(Math.random() * 50),
+//       ZAF: colors(Math.random() * 50),
+//       IND: colors(Math.random() * 50),
+//     });
+//   }, 2000);
+// };

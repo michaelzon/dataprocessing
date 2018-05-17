@@ -16,7 +16,7 @@ p {
 }
 
 .bar:hover {
-  fill: rgb(229, 0, 0)
+  fill: rgba(0, 0, 0, 0.4)
 }
 
 .textClass {
@@ -34,7 +34,7 @@ stroke-linejoin: round;
 .d3-tip {
   line-height: 1;
   padding: 12px;
-  background: rgba(252, 243, 0, 0.4);
+  background: rgba(252, 243, 0, 0.2);
   color: rgb(0, 0, 0);
   border-radius: 1px;
 }
