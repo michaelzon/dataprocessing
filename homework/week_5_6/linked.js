@@ -239,19 +239,27 @@ function createMap(incomeData, nld){
           .attr("fill", function(d, i) {
             for (i = 0; i < incomeData.length; i ++){
               if(incomeData[i]['region'] == d.properties.name){
-
-                if (dropdown )
-
-                return colorMaps80s20(s80s20Colors[i])
-
-                else
-
-                return andere kleuren
-
-                // miss hier nog een if statement met click functie, die dan zorgt voor de andere kleuren.
+                return colorMapPovRa(povRaColors[i])
               }
             }
           })
+
+
+          // // ik heb deze update functie gemaakt maar hij werkt niet:
+          // .attr("fill", function(d, i) {
+          //   for (i = 0; i < incomeData.length; i ++){
+          //     if(incomeData[i]['region'] == d.properties.name){
+          //       $(document).ready(function(){
+          //         $("#clickPovRa").click(function(){
+          //             return colorMapPovRa(povRaColors[i])
+          //           });
+          //         $("#clicks80s20").click(function(){
+          //             return colorMaps80s20(s80s20Colors[i])
+          //           });
+          //         });
+          //       }
+          //     }
+          //   })
 
           // creating thick borders between provinces and even thicker when touched
           .style('stroke', 'black')
@@ -279,6 +287,12 @@ function createMap(incomeData, nld){
             updateChart(wellBeingDict, d.properties.name)
           });
 
+
+  // $(document).ready(function(){
+  //   $("#clickPovRa").click(function(){
+  //     $("p").hide();
+  //   });
+  // });
 }
 
 function createChart(wellBeingDict, region = 0){
@@ -319,7 +333,7 @@ function createChart(wellBeingDict, region = 0){
 
   // and for y-axis
   var yAxis = d3.axisLeft()
-     .scale(yScale);
+     .scale(yScale)
 
   // creating tip box to show value
   var tip = d3.tip()
@@ -361,7 +375,7 @@ function createChart(wellBeingDict, region = 0){
 
       // shooting bars in the chart with padding
       .attr("x", function (d, i){
-        return xScale(independents[i]) + margin.left + margin.right;
+        return xScale(independents[i]) + margin.left + margin.left + margin.right;
       })
       .attr("y", chartHeight)
       .attr("width", chartWidth / chartData.length - barSpace)
@@ -384,13 +398,14 @@ function createChart(wellBeingDict, region = 0){
   // inserting x-axis on the canvas
   svg.append("g")
       .attr("class", "axis")
-      .attr("transform", "translate(20," + chartHeight + ")")
+      .attr("transform", "translate(25," + chartHeight + ")")
       .call(xAxis);
 
   // and the y-axis
   svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate(" + margin.bottom + ",1)")
+      // .attr("transform", "translate(" + margin.bottom "," margin.top + "1)")
       .call(yAxis)
 
       // dit doet niks volgensmij:
@@ -411,41 +426,5 @@ function updateChart(wellBeingDict, province){
   // calling the updated chart
   createChart(wellBeingDict, region = rightDataNumber);
 
-};
 
-// function updateColors(){
-//
-//   var basic_choropleth = new Datamap({
-//   element: document.getElementById("basic_choropleth"),
-//   projection: 'mercator',
-//   fills: {
-//     defaultFill: "#ABDDA4",
-//     authorHasTraveledTo: "#fa0fa0"
-//   },
-//   data: {
-//     USA: { fillKey: "authorHasTraveledTo" },
-//     JPN: { fillKey: "authorHasTraveledTo" },
-//     ITA: { fillKey: "authorHasTraveledTo" },
-//     CRI: { fillKey: "authorHasTraveledTo" },
-//     KOR: { fillKey: "authorHasTraveledTo" },
-//     DEU: { fillKey: "authorHasTraveledTo" },
-//   }
-//   });
-//
-//   // and another coloring for s80s20 quantile ratio
-//   var colorMaps80s20 = d3.scaleQuantize()
-//       .domain([d3.min(s80s20Colors), d3.max(s80s20Colors)])
-//       .range(colorbrewer.Greens[3]);
-//
-//   window.setInterval(function() {
-//     basic_choropleth.updateChoropleth({
-//       USA: colors(Math.random() * 10),
-//       RUS: colors(Math.random() * 100),
-//       AUS: { fillKey: 'authorHasTraveledTo' },
-//       BRA: colors(Math.random() * 50),
-//       CAN: colors(Math.random() * 50),
-//       ZAF: colors(Math.random() * 50),
-//       IND: colors(Math.random() * 50),
-//     });
-//   }, 2000);
-// };
+};
