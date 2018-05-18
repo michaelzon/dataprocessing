@@ -1,3 +1,7 @@
+// Name: Michael Zonneveld
+// Studentnumber: 11302984
+// Date:      18/05/2018
+
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
 var width = 720 - margin.left - margin.right;
