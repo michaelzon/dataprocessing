@@ -27,7 +27,7 @@ window.onload = function() {
   d3.queue()
   .defer(d3.request, wellBeing)
   .defer(d3.request, income)
-  .defer(d3.json, "nld.json") // this is now response 2
+  .defer(d3.json, "nld.json")
   .awaitAll(getData);
 
 };
@@ -240,7 +240,7 @@ function createMap(incomeData, nld){
             }
           })
 
-          // // ik heb deze update functie gemaakt maar hij werkt niet:
+          // // made this function but it does not work
           // .attr("fill", function(d, i) {
           //   for (i = 0; i < incomeData.length; i ++){
           //     if(incomeData[i]['region'] == d.properties.name){
@@ -277,7 +277,7 @@ function createMap(incomeData, nld){
               .style("stroke-width",0.7)
           })
 
-          // update the barchart with corresponding province!
+          // update the barchart with corresponding province
           .on("click", function(d){
             updateChart(wellBeingDict, d.properties.name)
           });
@@ -295,30 +295,28 @@ function createMap(incomeData, nld){
       .call(mapLegend)
 
 
-        // // andere poging tot
-        // svg.selectAll(".dropdown-menu")
-        //   .on("click", function(){
-        //     // select the option that is clicked on
-        //     var select = this.getAttribute(value);
-        //     console.log("select")
-        //     .attr("id", "region")
-        //     .attr("class", function(d, i) {
-        //       // console.log(d.properties.name)
-        //         return d.properties.name;
-        //     })
-        //
-        //     if(select == "optionOne")
-        //     // fill them up according to poverty rate
-        //     svg.attr("fill", function(d, i) {
-        //       for (i = 0; i < incomeData.length; i ++){
-        //         if(incomeData[i]['region'] == d.properties.name){
-        //           return colorMapPovRa(povRaColors[i])
-        //         }
-        //       }
-        //     })
-        //   })
-
-
+    // a different attempt to the update color map function, but doesnt work either 
+    // svg.selectAll(".dropdown-menu")
+    //   .on("click", function(){
+    //     // select the option that is clicked on
+    //     var select = this.getAttribute(value);
+    //     console.log("select")
+    //     .attr("id", "region")
+    //     .attr("class", function(d, i) {
+    //       // console.log(d.properties.name)
+    //         return d.properties.name;
+    //     })
+    //
+    //     if(select == "optionOne")
+    //     // fill them up according to poverty rate
+    //     svg.attr("fill", function(d, i) {
+    //       for (i = 0; i < incomeData.length; i ++){
+    //         if(incomeData[i]['region'] == d.properties.name){
+    //           return colorMapPovRa(povRaColors[i])
+    //         }
+    //       }
+    //     })
+    //   })
 
 };
 
