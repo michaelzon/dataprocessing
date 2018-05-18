@@ -37,7 +37,8 @@ stroke-linejoin: round;
 .d3-tip {
   line-height: 1;
   padding: 12px;
-  background: rgba(252, 243, 0, 0.2);
+  font-family: avenir;
+  background: rgba(252, 243, 0, 0.8);
   color: rgb(0, 0, 0);
   border-radius: 1px;
 }
@@ -67,6 +68,20 @@ stroke-linejoin: round;
   font-size: 20px;
   /* color: rgba(252, 243, 0, 0.4); */
   opacity: 0.7;
+}
+
+.legendTitle {
+  font-family: avenir;
+  padding-bottom: 5px;
+}
+
+#chartLegend{
+  font-family: avenir;
+}
+
+li {
+  font-family: avenir;
+  font-size: 16px;
 }
 
 /* #chart {

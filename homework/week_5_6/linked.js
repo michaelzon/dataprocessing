@@ -36,9 +36,6 @@ function getData(error, response, nld) {
   // make json format from the first data set
   var firstData = JSON.parse(response[0].responseText);
 
-  // // list for all the regions
-  // var firstRegionsArray = [];
-
   // insert twelve regions in array
   for(var i = 0; i < 12; i ++){
     firstRegionsArray.push(firstData.structure.dimensions.series[0].values[i]["name"])
@@ -127,9 +124,6 @@ function getData(error, response, nld) {
     s80s20Array.push(secondSet[i+2]);
   }
 
-  // making second dict for indexing later on
-  // var incomeDict = [];
-
   // linking keys and values in dictionary
   for(var i = 0; i < 12; i++){
     incomeDict.push({
@@ -182,6 +176,20 @@ function createMap(incomeData, nld){
       .domain([d3.min(s80s20Colors), d3.max(s80s20Colors)])
       .range(colorbrewer.Greens[3]);
 
+  // creating legend for map coloring
+  var mapLegend = d3.legendColor()
+        .labelFormat(d3.format(".3f"))
+        .shape("path", d3.symbol()
+        .type(d3.symbolSquare)
+        .size(700)())
+        .shapePadding(30)
+        .shapeWidth(50)
+        .shapeHeight(20)
+        .labelOffset(12)
+        .title("Regional headcount ratios for disposable income, with poverty line set at 60% of the national median income:")
+        .titleWidth(200)
+        .scale(colorMapPovRa);
+
   // extract the meaning of projection for code-clearity
   var projection = d3.geoMercator()
       .scale(1)
@@ -217,7 +225,6 @@ function createMap(incomeData, nld){
 
           // return name of the provinces
           .attr("class", function(d, i) {
-            // console.log(d.properties.name)
               return d.properties.name;
           })
           // fill them up according to poverty rate
@@ -271,28 +278,43 @@ function createMap(incomeData, nld){
             updateChart(wellBeingDict, d.properties.name)
           });
 
-          // go to dropdown option
-        svg.selectAll(".dropdown-menu")
-          .on("click", function(){
-            // select the option that is clicked on
-            var select = this.getAttribute(value);
-            console.log("select")
-            .attr("id", "region")
-            .attr("class", function(d, i) {
-              // console.log(d.properties.name)
-                return d.properties.name;
-            })
+  var svgMapDes = d3.select("#mapdes")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
 
-            if(select == "optionOne")
-            // fill them up according to poverty rate
-            svg.attr("fill", function(d, i) {
-              for (i = 0; i < incomeData.length; i ++){
-                if(incomeData[i]['region'] == d.properties.name){
-                  return colorMapPovRa(povRaColors[i])
-                }
-              }
-            })
-          })
+  svgMapDes.append("g")
+      .attr("class", "mapLegend")
+      .attr("transform", "translate(20,20)");
+
+  svgMapDes.select(".mapLegend")
+      .call(mapLegend)
+
+
+        // // andere poging tot
+        // svg.selectAll(".dropdown-menu")
+        //   .on("click", function(){
+        //     // select the option that is clicked on
+        //     var select = this.getAttribute(value);
+        //     console.log("select")
+        //     .attr("id", "region")
+        //     .attr("class", function(d, i) {
+        //       // console.log(d.properties.name)
+        //         return d.properties.name;
+        //     })
+        //
+        //     if(select == "optionOne")
+        //     // fill them up according to poverty rate
+        //     svg.attr("fill", function(d, i) {
+        //       for (i = 0; i < incomeData.length; i ++){
+        //         if(incomeData[i]['region'] == d.properties.name){
+        //           return colorMapPovRa(povRaColors[i])
+        //         }
+        //       }
+        //     })
+        //   })
+
+
 
 };
 
@@ -357,8 +379,8 @@ function createChart(wellBeingDict, region = 0){
               "Perceived social network support", "Share of households with internet broadband access"])
       .range(colorbrewer.BrBG[5]);
 
-  // creating legend
-  var theLegend = d3.legendColor()
+  // creating legend for chart
+  var chartLegend = d3.legendColor()
          .labelFormat(d3.format(".0f"))
          .shape("path", d3.symbol()
          .type(d3.symbolSquare)
@@ -432,29 +454,30 @@ function createChart(wellBeingDict, region = 0){
           .attr("dx", "-.2em")
           .attr("dy", "-.2em")
 
+          // needed to rotate labels due to visibility
           .attr("transform", function(d) {
               return "rotate(-90)"
               });
 
+  // adding name of province in chart when clicked
   svg.append("text")
       .attr("id", "provBars")
       .attr("x", chartWidth / 2 - 300)
       .attr("y", chartHeight / 8)
-      // .transition().duration(2000)
       .text(firstRegionsArray[region])
 
+  // placing legend in second row in seperate column
   var svgChartDes = d3.select("#chartdes")
       .append("svg")
       .attr("width", width)
       .attr("height", height);
-
 
   svgChartDes.append("g")
       .attr("class", "chartLegend")
       .attr("transform", "translate(20,20)");
 
   svgChartDes.select(".chartLegend")
-      .call(theLegend)
+      .call(chartLegend)
 
 };
 
@@ -471,6 +494,5 @@ function updateChart(wellBeingDict, province){
 
   // calling the updated chart
   createChart(wellBeingDict, region = rightDataNumber);
-
 
 };
