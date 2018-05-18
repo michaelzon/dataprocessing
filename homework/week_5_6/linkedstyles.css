@@ -5,6 +5,9 @@
 .item {
   order: <integer>; /* default is 0 */
 }
+.nav-tabs {
+  font-family: avenir;
+}
 
 h1 {
   font-family: avenir;
