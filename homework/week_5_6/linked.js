@@ -1,18 +1,6 @@
-// id: "GINI",
-// name: "Gini (at disposable income, after taxes and transfers)"
-// },
-// {
-// id: "PVT6A",
-// name: "Poverty rate after taxes and transfers, Poverty line 60%"
-// },
-// {
-// id: "S80S20A",
-// name: "S80/S20 disposable income quintile ratio
-
-
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
-var width = 720
+var width = 720 - margin.left - margin.right;
     height = 500 - margin.top - margin.bottom;
 
 var wellBeingDict = [];
@@ -364,7 +352,7 @@ function createChart(wellBeingDict, region = 0){
       .attr('class', 'd3-tip')
       .offset([-10, 0])
       .html(function(d, i) {
-      return (d)
+      return (d + "%")
       })
 
   // colorfunction with colorbrewer for those who suffer from bad eyes
@@ -389,19 +377,6 @@ function createChart(wellBeingDict, region = 0){
          .shapeHeight(20)
          .labelOffset(12)
          .scale(legendBars);
-
-
-  // // function for legend
-  // var barLegend = d3.legendColor()
-  //     .labelFormat(d3.format(".2f"))
-  //     .useClass(true)
-  //     .title("Stacksstacks")
-  //     .titleWidth(100)
-  //     .scale(quantize);
-
-
-      // .tickFormat(function(d) {return d + "%";})
-
 
   // creating canvas for visualising barchart
   var svg = d3.select("#chart")
@@ -489,31 +464,6 @@ function createChart(wellBeingDict, region = 0){
 
   svgChartDes.select(".chartLegend")
       .call(theLegend)
-
-
-  // svg.append("g")
-  //     .attr("class", "legendQuant")
-  //     .attr("transform", "translate(20,20)");
-  //
-  // svg.select(".legendQuant")
-  //     .call(legend);
-
-
-  // var svg = d3.select("svg");
-
-// svg.append("g")
-//   .attr("class", "legendQuant")
-//   .attr("transform", "translate(20,20)");
-
-// var legend = d3.legendColor()
-//   .labelFormat(d3.format(".2f"))
-//   .useClass(true)
-//   .title("A really really really reallreally long title")
-//   .titleWidth(100)
-//   .scale(colorBars);
-//
-// svg.select(".legendQuant")
-//   .call(legend);
 
 };
 
