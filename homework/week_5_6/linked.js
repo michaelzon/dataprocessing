@@ -12,7 +12,7 @@
 
 var margin = {top: 20, right: 10, bottom: 20, left: 10};
 
-var width = 720 - margin.left - margin.right,
+var width = 720
     height = 500 - margin.top - margin.bottom;
 
 var wellBeingDict = [];
@@ -151,7 +151,6 @@ function getData(error, response, nld) {
       s80s20: s80s20Array[i],
     });
   }
-
   createMap(incomeDict, response[2])
   createChart(wellBeingDict);
 };
@@ -244,7 +243,6 @@ function createMap(incomeData, nld){
             }
           })
 
-
           // // ik heb deze update functie gemaakt maar hij werkt niet:
           // .attr("fill", function(d, i) {
           //   for (i = 0; i < incomeData.length; i ++){
@@ -287,13 +285,37 @@ function createMap(incomeData, nld){
             updateChart(wellBeingDict, d.properties.name)
           });
 
+          // go to dropdown option
+        svg.selectAll(".dropdown-menu")
+          .on("click", function(){
+            // select the option that is clicked on
+            var select = this.getAttribute(value);
+            console.log("select")
+            .attr("id", "region")
+            .attr("class", function(d, i) {
+              // console.log(d.properties.name)
+                return d.properties.name;
+            })
+
+            if(select == "optionOne")
+            // fill them up according to poverty rate
+            svg.attr("fill", function(d, i) {
+              for (i = 0; i < incomeData.length; i ++){
+                if(incomeData[i]['region'] == d.properties.name){
+                  return colorMapPovRa(povRaColors[i])
+                }
+              }
+            })
+          })
+
+
 
   // $(document).ready(function(){
   //   $("#clickPovRa").click(function(){
   //     $("p").hide();
   //   });
   // });
-}
+};
 
 function createChart(wellBeingDict, region = 0){
 
@@ -334,6 +356,7 @@ function createChart(wellBeingDict, region = 0){
   // and for y-axis
   var yAxis = d3.axisLeft()
      .scale(yScale)
+     .tickFormat(function(d) {return d + "%";})
 
   // creating tip box to show value
   var tip = d3.tip()
@@ -343,16 +366,43 @@ function createChart(wellBeingDict, region = 0){
       return (d)
       })
 
+  // colorfunction with colorbrewer for those who suffer from bad eyes
+  var colorBars = d3.scaleOrdinal()
+      .domain([0, 6])
+      .range(colorbrewer.BrBG[6]);
+
+  // because Quantize can't handle strings, new function for the legend
+  // var legendBars = d3.scaleOrdinal()
+  //     .domain[""]
+
+  // creating legend
+  var theLegend = d3.legendColor()
+         .labelFormat(d3.format(".0f"))
+         .shape("path", d3.symbol().type(d3.symbolSquare).size(150)())
+         .shapePadding(5)
+         .shapeWidth(50)
+         .shapeHeight(20)
+         .labelOffset(12)
+         .scale(colorBars);
+
+
+  // // function for legend
+  // var barLegend = d3.legendColor()
+  //     .labelFormat(d3.format(".2f"))
+  //     .useClass(true)
+  //     .title("Stacksstacks")
+  //     .titleWidth(100)
+  //     .scale(quantize);
+
+
+      // .tickFormat(function(d) {return d + "%";})
+
+
   // creating canvas for visualising barchart
   var svg = d3.select("#chart")
       .append("svg")
       .attr("width", width)
       .attr("height", height);
-
-  // colorfunction with colorbrewer for those who suffer from bad eyes
-  var colorBars = d3.scaleQuantize()
-      .domain([0, 5])
-      .range(colorbrewer.BrBG[5]);
 
   // placing box with value that is shown in bar
   svg.call(tip);
@@ -405,11 +455,61 @@ function createChart(wellBeingDict, region = 0){
   svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate(" + margin.bottom + ",1)")
-      // .attr("transform", "translate(" + margin.bottom "," margin.top + "1)")
       .call(yAxis)
+      .selectAll("text")
+          .style("text-anchor", "middle")
+          .attr("dx", "-.2em")
+          .attr("dy", "-.2em")
 
-      // dit doet niks volgensmij:
-  // return(chartData)
+          .attr("transform", function(d) {
+              return "rotate(-90)"
+              });
+
+  svg.append("text")
+      .attr("id", "provBars")
+      .attr("x", chartWidth / 2 - 300)
+      .attr("y", chartHeight / 8)
+      // .transition().duration(2000)
+      .text(firstRegionsArray[region])
+
+  var svgChartDes = d3.select("#chartdes")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+
+  svgChartDes.append("g")
+      .attr("class", "chartLegend")
+      .attr("transform", "translate(20,20)");
+
+  svgChartDes.select(".chartLegend")
+      .call(legend)
+
+
+  // svg.append("g")
+  //     .attr("class", "legendQuant")
+  //     .attr("transform", "translate(20,20)");
+  //
+  // svg.select(".legendQuant")
+  //     .call(legend);
+
+
+  // var svg = d3.select("svg");
+
+// svg.append("g")
+//   .attr("class", "legendQuant")
+//   .attr("transform", "translate(20,20)");
+
+// var legend = d3.legendColor()
+//   .labelFormat(d3.format(".2f"))
+//   .useClass(true)
+//   .title("A really really really reallreally long title")
+//   .titleWidth(100)
+//   .scale(colorBars);
+//
+// svg.select(".legendQuant")
+//   .call(legend);
+
 };
 
 function updateChart(wellBeingDict, province){

@@ -21,7 +21,7 @@ p {
 
 .textClass {
     font-family: avenir;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .names {
@@ -57,4 +57,16 @@ stroke-linejoin: round;
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+#provBars {
+  font-family: avenir;
+  font-size: 20px;
+  /* color: rgba(252, 243, 0, 0.4); */
+  opacity: 0.7;
+}
+
+#chart {
+  /* margin-left: 50px; */
+  /* padding-right: 50px; */
 }
