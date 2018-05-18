@@ -321,7 +321,8 @@ function createChart(wellBeingDict, region = 0){
 
   // remove current svg element if another is added
   if (d3.select("#chart").select("svg")){
-    d3.select("#chart").select("svg").remove();
+    d3.select("#chart").select("svg").remove()
+    d3.select("#chartdes").select("svg").remove();
   }
 
   // creating list with data for chart
@@ -368,22 +369,26 @@ function createChart(wellBeingDict, region = 0){
 
   // colorfunction with colorbrewer for those who suffer from bad eyes
   var colorBars = d3.scaleOrdinal()
-      .domain([0, 6])
-      .range(colorbrewer.BrBG[6]);
+      .domain(['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'])
+      .range(colorbrewer.BrBG[5]);
 
-  // because Quantize can't handle strings, new function for the legend
-  // var legendBars = d3.scaleOrdinal()
-  //     .domain[""]
+  // because I want to give the full names of the variables create extra function
+  var legendBars = d3.scaleOrdinal()
+      .domain(["Unemployment rate", "Employment rate", "Share of labour force with at least secondary education",
+              "Perceived social network support", "Share of households with internet broadband access"])
+      .range(colorbrewer.BrBG[5]);
 
   // creating legend
   var theLegend = d3.legendColor()
          .labelFormat(d3.format(".0f"))
-         .shape("path", d3.symbol().type(d3.symbolSquare).size(150)())
-         .shapePadding(5)
+         .shape("path", d3.symbol()
+         .type(d3.symbolSquare)
+         .size(700)())
+         .shapePadding(30)
          .shapeWidth(50)
          .shapeHeight(20)
          .labelOffset(12)
-         .scale(colorBars);
+         .scale(legendBars);
 
 
   // // function for legend
@@ -483,7 +488,7 @@ function createChart(wellBeingDict, region = 0){
       .attr("transform", "translate(20,20)");
 
   svgChartDes.select(".chartLegend")
-      .call(legend)
+      .call(theLegend)
 
 
   // svg.append("g")
