@@ -172,8 +172,6 @@ function createMap(incomeData, nld){
     s80s20Colors.push(incomeData[i]['s80s20'])
   }
 
-  console.log(s80s20Colors)
-
   // coloring map according to poverty rate
   var colorMapPovRa = d3.scaleQuantize()
       .domain([d3.min(povRaColors), d3.max(povRaColors)])
@@ -296,13 +294,6 @@ function createMap(incomeData, nld){
             })
           })
 
-
-
-  // $(document).ready(function(){
-  //   $("#clickPovRa").click(function(){
-  //     $("p").hide();
-  //   });
-  // });
 };
 
 function createChart(wellBeingDict, region = 0){
