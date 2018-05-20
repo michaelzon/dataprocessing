@@ -7,11 +7,9 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var width = 720 - margin.left - margin.right;
     height = 500 - margin.top - margin.bottom;
 
+// global dictionaries for usage throughout the whole script
 var wellBeingDict = [];
-
 var incomeDict = [];
-
-var independents = ['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'];
 
 // list for all the regions
 var firstRegionsArray = [];
@@ -143,7 +141,14 @@ function getData(error, response, nld) {
 
 function createMap(incomeData, nld){
 
-  var format = d3.format(",");
+  // remove legends when update (doesn't work, but I tried)
+  if (d3.select("#selectPovRa").select("svg")){
+    d3.select("#mapLegendOrange").select("svg").remove()
+  }
+
+  if (d3.select("#selectS80s20").select("svg")){
+    d3.select("#mapLegendGreen").select("svg").remove()
+  }
 
   // create tipbox for regions
   var regionTip = d3.tip()
@@ -181,7 +186,7 @@ function createMap(incomeData, nld){
       .range(colorbrewer.Oranges[3]);
 
   // creating legend for map coloring
-  var mapLegend = d3.legendColor()
+  var mapLegendGreen = d3.legendColor()
         .labelFormat(d3.format(".3f"))
         .shape("path", d3.symbol()
         .type(d3.symbolSquare)
@@ -193,6 +198,20 @@ function createMap(incomeData, nld){
         .title("Regional headcount ratios for disposable income, with poverty line set at 60% of the national median income:")
         .titleWidth(200)
         .scale(colorMapPovRa);
+
+  // creating legend for map coloring
+  var mapLegendOrange = d3.legendColor()
+        .labelFormat(d3.format(".3f"))
+        .shape("path", d3.symbol()
+        .type(d3.symbolSquare)
+        .size(700)())
+        .shapePadding(30)
+        .shapeWidth(50)
+        .shapeHeight(20)
+        .labelOffset(12)
+        .title("Quintile share ratio (S80/S20) for disposable income: Ratio between average income of the top quintile and average income of the bottom quintile.")
+        .titleWidth(200)
+        .scale(colorMap80s20);
 
   // extract the meaning of projection for code-clearity
   var projection = d3.geoMercator()
@@ -272,11 +291,18 @@ function createMap(incomeData, nld){
       .attr("height", height);
 
   svgMapDes.append("g")
-      .attr("class", "mapLegend")
+      .attr("id", "mapLegendGreen")
       .attr("transform", "translate(20,20)");
 
-  svgMapDes.select(".mapLegend")
-      .call(mapLegend)
+  svgMapDes.select("#mapLegendGreen")
+      .call(mapLegendGreen)
+
+  svgMapDes.append("g")
+      .attr("id", "mapLegendOrange")
+      .attr("transform", "translate(300, 20)");
+
+  svgMapDes.select("#mapLegendOrange")
+      .call(mapLegendOrange)
 
   function mapColoring(){
 
@@ -312,6 +338,8 @@ function createMap(incomeData, nld){
 };
 
 function createChart(wellBeingDict, region = 0){
+
+  var independents = ['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'];
 
   // remove current svg elements if another is added
   if (d3.select("#chart").select("svg")){
