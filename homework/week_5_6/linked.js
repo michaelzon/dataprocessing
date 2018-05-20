@@ -231,8 +231,14 @@ function createMap(incomeData, nld){
           .attr("class", function(d, i) {
               return d.properties.name;
           })
+
           // fill them up according to poverty rate
-          .attr("fill", "orange")
+          .style("fill", function(d, i) {
+            for (i = 0; i < incomeData.length; i ++) {
+              if(incomeData[i]['region'] == d.properties.name) {
+                green = colorMapPovRa(povRaColors[i])
+                return green
+              }}})
 
           // creating thick borders between provinces and even thicker when touched
           .style('stroke', 'black')
@@ -274,10 +280,6 @@ function createMap(incomeData, nld){
 
   function mapColoring(){
 
-    var green
-    var orange
-    console.log(green)
-
     // change coloring of the map when clicked on variable
     var svgDropPovRa = d3.select("#selectPovRa")
         .on("click", function(d){
@@ -286,7 +288,7 @@ function createMap(incomeData, nld){
             .style("fill", function(d, i) {
               for (i = 0; i < incomeData.length; i ++) {
                 if(incomeData[i]['region'] == d.properties.name) {
-                  green = colorMapPovRa(povRaColors[i])
+                  var green = colorMapPovRa(povRaColors[i])
                   return green
                 }
               }})
@@ -298,13 +300,11 @@ function createMap(incomeData, nld){
             .style("fill", function(d, i) {
               for (i = 0; i < incomeData.length; i ++) {
                 if(incomeData[i]['region'] == d.properties.name) {
-                  orange = colorMap80s20(s80s20Colors[i])
+                  var orange = colorMap80s20(s80s20Colors[i])
                   return orange
                 }
               }})
             });
-
-    console.log(green)
 
   }
   mapColoring()
