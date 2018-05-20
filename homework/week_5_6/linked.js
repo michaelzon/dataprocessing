@@ -15,7 +15,7 @@ var incomeDict = [];
 var firstRegionsArray = [];
 
 // the following part will be triggered when the page is loaded
-window.onload = function() {
+window.onload = function(){
 
   // api request for the data
   var wellBeing = "https://stats.oecd.org/SDMX-JSON/data/RWB/NL11+NL12+NL13+NL21+NL22+NL23+NL31+NL32+NL33+NL34+NL41+NL42.RWB+EMP_RA+UNEM_RA+EDU38_SH+BB_ACC+SUBJ_SOC_SUPP.VALUE/all?startTime=2014&endTime=2014"
@@ -30,7 +30,7 @@ window.onload = function() {
 
 };
 
-function getData(error, response, nld) {
+function getData(error, response, nld){
 
   // check if data gets loaded
   if (error) throw error;
@@ -247,14 +247,14 @@ function createMap(incomeData, nld){
       .attr("id", "region")   // adding id's for clicking function
 
       // return name of the provinces
-      .attr("class", function(d, i) {
+      .attr("class", function(d, i){
           return d.properties.name;
       })
 
       // fill them up according to poverty rate
-      .style("fill", function(d, i) {
-        for (i = 0; i < incomeData.length; i ++) {
-          if(incomeData[i]['region'] == d.properties.name) {
+      .style("fill", function(d, i){
+        for (i = 0; i < incomeData.length; i ++){
+          if(incomeData[i]['region'] == d.properties.name){
             green = colorMapPovRa(povRaColors[i])
             return green
           }}})
@@ -327,19 +327,20 @@ function createMap(incomeData, nld){
 
     var svgDropS80s20 = d3.select("#selectS80s20")
         .on("click", function(d){
-            svg.selectAll("path")
-            .style("fill", function(d, i){
-              for (i = 0; i < incomeData.length; i ++){
-                if (incomeData[i]['region'] == d.properties.name){
-                  var orange = colorMap80s20(s80s20Colors[i]);
-                  return orange;
-                }
-              }})
-            });
+          svg.selectAll("path")
+          .style("fill", function(d, i){
+            for (i = 0; i < incomeData.length; i ++){
+              if (incomeData[i]['region'] == d.properties.name){
+                var orange = colorMap80s20(s80s20Colors[i]);
+                return orange;
+              }
+            }
+          })
+        });
 
-  }
+  };
 
-  mapColoring()
+  mapColoring();
 
 };
 
@@ -350,21 +351,21 @@ function createChart(wellBeingDict, region = 0){
 
   // remove current chart if another is added by clicking on province
   if (d3.select("#chart").select("svg")){
-    d3.select("#chart").select("svg").remove()
-    d3.select("#chartdes").select("svg").remove()
+    d3.select("#chart").select("svg").remove();
+    d3.select("#chartdes").select("svg").remove();
   }
 
   // region indicates the clicked or initial province shown in chart
   var chartData = [];
 
-  chartData.push(wellBeingDict[region]['unemRa'])
-  chartData.push(wellBeingDict[region]['empRa'])
-  chartData.push(wellBeingDict[region]['eduSh'])
-  chartData.push(wellBeingDict[region]['socSupp'])
-  chartData.push(wellBeingDict[region]['bbAcc'])
+  chartData.push(wellBeingDict[region]['unemRa']);
+  chartData.push(wellBeingDict[region]['empRa']);
+  chartData.push(wellBeingDict[region]['eduSh']);
+  chartData.push(wellBeingDict[region]['socSupp']);
+  chartData.push(wellBeingDict[region]['bbAcc']);
 
-  var chartWidth = width - margin.left - margin.right
-  var chartHeight = height - margin.top - margin.bottom
+  var chartWidth = width - margin.left - margin.right;
+  var chartHeight = height - margin.top - margin.bottom;
 
   var barSpace = 5;
   var barWidth = 30;
@@ -386,15 +387,17 @@ function createChart(wellBeingDict, region = 0){
   // ensure shown values are percentages on y-axis
   var yAxis = d3.axisLeft()
      .scale(yScale)
-     .tickFormat(function(d) {return d + "%";})
+     .tickFormat(function(d){
+       return (d + "%");
+    });
 
   // creating tip box to show value
   var tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([-10, 0])
-      .html(function(d, i) {
-      return (d + "%")
-      })
+      .html(function(d, i){
+      return (d + "%");
+    });
 
   // colorfunction with colorbrewer for those who suffer from bad eyes
   var colorBars = d3.scaleOrdinal()
@@ -435,7 +438,7 @@ function createChart(wellBeingDict, region = 0){
       .attr("class", "bar")
 
       // color the bars
-      .attr("fill", function(d, i) {
+      .attr("fill", function(d, i){
           return colorBars(i);
       })
 
@@ -452,13 +455,13 @@ function createChart(wellBeingDict, region = 0){
 
       // make them move slick
       .transition().duration(2000)
-      .delay(function (d, i) {
+      .delay(function (d, i){
         return i * 200;
       })
 
       // bars going up
       .attr("y", function (d, i){
-        return yScale(d)
+        return yScale(d);
       })
 
       .attr("height", function (d){
@@ -477,21 +480,21 @@ function createChart(wellBeingDict, region = 0){
       .attr("transform", "translate(" + margin.bottom + ",1)")
       .call(yAxis)
       .selectAll("text")
-          .style("text-anchor", "middle")
-          .attr("dx", "-.2em")
-          .attr("dy", "-.2em")
+        .style("text-anchor", "middle")
+        .attr("dx", "-.2em")
+        .attr("dy", "-.2em")
 
-          // needed to rotate labels due to visibility
-          .attr("transform", function(d) {
-              return "rotate(-90)"
-              });
+        // needed to rotate labels due to visibility
+        .attr("transform", function(d){
+            return "rotate(-90)"
+            });
 
   // adding name of province in chart when clicked
   svg.append("text")
       .attr("id", "provBars")
       .attr("x", chartWidth / 2 - 300)
       .attr("y", chartHeight / 8)
-      .text(firstRegionsArray[region])
+      .text(firstRegionsArray[region]);
 
   // placing legend in second row in seperate column
   var svgChartDes = d3.select("#chartdes")
@@ -504,7 +507,7 @@ function createChart(wellBeingDict, region = 0){
       .attr("transform", "translate(20,20)");
 
   svgChartDes.select(".chartLegend")
-      .call(chartLegend)
+      .call(chartLegend);
 
 };
 
