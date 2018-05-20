@@ -7,14 +7,14 @@ var margin = {top: 20, right: 10, bottom: 20, left: 10};
 var width = 720 - margin.left - margin.right;
     height = 500 - margin.top - margin.bottom;
 
-// global dictionaries for usage throughout the whole script
+// dictionaries for usage throughout the whole script
 var wellBeingDict = [];
 var incomeDict = [];
 
-// list for all the regions
+// list for all the regions for usage in multiple functions
 var firstRegionsArray = [];
 
-// function that will be triggered when the page is loaded
+// the following part will be triggered when the page is loaded
 window.onload = function() {
 
   // api request for the data
@@ -39,16 +39,16 @@ function getData(error, response, nld) {
   var firstData = JSON.parse(response[0].responseText);
 
   // insert twelve regions in array
-  for(var i = 0; i < 12; i ++){
-    firstRegionsArray.push(firstData.structure.dimensions.series[0].values[i]["name"])
+  for (var i = 0; i < 12; i ++){
+    firstRegionsArray.push(firstData.structure.dimensions.series[0].values[i]["name"]);
   }
 
   // and a list with all the elements from api request
   var firstSet = [];
 
   // push 8 elements in an array with strictly values
-  for(var i = 0; i < firstRegionsArray.length; i ++){
-    for(var j = 0; j < 5; j ++){
+  for (var i = 0; i < firstRegionsArray.length; i ++){
+    for (var j = 0; j < 5; j ++){
       var linking = i + ":" + j + ":0";
       firstSet.push(firstData.dataSets[0].series[linking].observations["0"]["0"]);
     }
@@ -78,7 +78,7 @@ function getData(error, response, nld) {
   }
 
   // linking keys and values in dictionary
-  for(var i = 0; i < 12; i++){
+  for (var i = 0; i < 12; i ++){
     wellBeingDict.push({
       region: firstRegionsArray[i],
       unemRa: unemRaArray[i], // vraag nog even na hoe je hier procent teken kan hardcoden of zoek het zelf uit.
@@ -96,16 +96,16 @@ function getData(error, response, nld) {
   var secondRegionsArray = [];
 
   // insert twelve regions in array
-  for(var i = 0; i < 12; i ++){
-    secondRegionsArray.push(secondData.structure.dimensions.series[0].values[i]["name"])
+  for (var i = 0; i < 12; i ++){
+    secondRegionsArray.push(secondData.structure.dimensions.series[0].values[i]["name"]);
   }
 
   // and a list with all the elements from second api request
   var secondSet = [];
 
   // push 3 elements in an array with strictly values
-  for(var i = 0; i < secondRegionsArray.length; i ++){
-    for(var j = 0; j < 3; j ++){
+  for (var i = 0; i < secondRegionsArray.length; i ++){
+    for (var j = 0; j < 3; j ++){
       var linking = i + ":" + j + ":0";
       secondSet.push(secondData.dataSets[0].series[linking].observations["0"]["0"]);
     }
@@ -127,7 +127,7 @@ function getData(error, response, nld) {
   }
 
   // linking keys and values in dictionary
-  for(var i = 0; i < 12; i++){
+  for (var i = 0; i < 12; i ++){
     incomeDict.push({
       region: secondRegionsArray[i],
       gini: giniArray[i],
@@ -135,19 +135,19 @@ function getData(error, response, nld) {
       s80s20: s80s20Array[i],
     });
   }
-  createMap(incomeDict, response[2])
-  createChart(wellBeingDict)
+  createMap(incomeDict, response[2]);
+  createChart(wellBeingDict);
 };
 
 function createMap(incomeData, nld){
 
   // remove legends when update (doesn't work, but I tried)
   if (d3.select("#selectPovRa").select("svg")){
-    d3.select("#mapLegendOrange").select("svg").remove()
+    d3.select("#mapLegendOrange").select("svg").remove();
   }
 
   if (d3.select("#selectS80s20").select("svg")){
-    d3.select("#mapLegendGreen").select("svg").remove()
+    d3.select("#mapLegendGreen").select("svg").remove();
   }
 
   // create tipbox for regions
@@ -156,10 +156,10 @@ function createMap(incomeData, nld){
       .offset([-10, 0])
       .html(function(d, i){
 
-        var tipBoxDict = {}
+        var tipBoxDict = {};
         for (i = 0; i < incomeData.length; i ++){
-          if(incomeData[i]['region'] == d.properties.name){
-            tipBoxDict[incomeData[i]['region']] = incomeData[i]['gini']
+          if (incomeData[i]['region'] == d.properties.name){
+            tipBoxDict[incomeData[i]['region']] = incomeData[i]['gini'];
           }
         }
 
@@ -167,12 +167,12 @@ function createMap(incomeData, nld){
         return "<strong>Region: </strong>" + d.properties.name + "<br><strong>GINI: </strong>" + tipBoxDict[d.properties.name] +"</span>";
       })
 
-  povRaColors = []
-  s80s20Colors = []
+  povRaColors = [];
+  s80s20Colors = [];
 
   for (var i = 0; i < incomeData.length; i ++){
-    povRaColors.push(incomeData[i]['povRa'])
-    s80s20Colors.push(incomeData[i]['s80s20'])
+    povRaColors.push(incomeData[i]['povRa']);
+    s80s20Colors.push(incomeData[i]['s80s20']);
   }
 
   // coloring map according to poverty rate
@@ -180,12 +180,12 @@ function createMap(incomeData, nld){
       .domain([d3.min(povRaColors), d3.max(povRaColors)])
       .range(colorbrewer.Greens[3]);
 
-  // // and another coloring for s80s20 quantile ratio
+  // and another coloring for s80s20 quantile ratio
   var colorMap80s20 = d3.scaleQuantize()
       .domain([d3.min(s80s20Colors), d3.max(s80s20Colors)])
       .range(colorbrewer.Oranges[3]);
 
-  // creating legend for map coloring
+  // creating first legend for map coloring
   var mapLegendGreen = d3.legendColor()
         .labelFormat(d3.format(".3f"))
         .shape("path", d3.symbol()
@@ -199,7 +199,7 @@ function createMap(incomeData, nld){
         .titleWidth(200)
         .scale(colorMapPovRa);
 
-  // creating legend for map coloring
+  // creating second legend for map coloring
   var mapLegendOrange = d3.legendColor()
         .labelFormat(d3.format(".3f"))
         .shape("path", d3.symbol()
@@ -227,64 +227,65 @@ function createMap(incomeData, nld){
       .attr("width", width)
       .attr("height", height);
 
-  svg.call(regionTip)
+  svg.call(regionTip);
 
-      var l = topojson.feature(nld, nld.objects.subunits).features[3],
-          b = path.bounds(l),
-          s = .2 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
-          t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+  var l = topojson.feature(nld, nld.objects.subunits).features[3],
+      b = path.bounds(l),
+      s = .2 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+      t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
 
-      projection
-          .scale(s)
-          .translate(t);
+  projection
+      .scale(s)
+      .translate(t);
 
-    // svg.append("g")
-      svg.selectAll("path")
-          .data(topojson.feature(nld, nld.objects.subunits).features)
-          .enter()
-          .append("path")
-          .attr("d", path)
-          .attr("id", "region")   // adding id's for clicking function
+  // drawing provinces and give them an ID for clicking function
+  svg.selectAll("path")
+      .data(topojson.feature(nld, nld.objects.subunits).features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("id", "region")   // adding id's for clicking function
 
-          // return name of the provinces
-          .attr("class", function(d, i) {
-              return d.properties.name;
-          })
+      // return name of the provinces
+      .attr("class", function(d, i) {
+          return d.properties.name;
+      })
 
-          // fill them up according to poverty rate
-          .style("fill", function(d, i) {
-            for (i = 0; i < incomeData.length; i ++) {
-              if(incomeData[i]['region'] == d.properties.name) {
-                green = colorMapPovRa(povRaColors[i])
-                return green
-              }}})
+      // fill them up according to poverty rate
+      .style("fill", function(d, i) {
+        for (i = 0; i < incomeData.length; i ++) {
+          if(incomeData[i]['region'] == d.properties.name) {
+            green = colorMapPovRa(povRaColors[i])
+            return green
+          }}})
 
-          // creating thick borders between provinces and even thicker when touched
-          .style('stroke', 'black')
-          .style('stroke-width', 1.5)
-          .style("opacity",0.8)
+      // creating thick borders between provinces and even thicker when touched
+      .style('stroke', 'black')
+      .style('stroke-width', 1.5)
+      .style("opacity",0.8)
+      .style("stroke","black")
+      .style('stroke-width', 0.7)
+      .on('mouseover',function(d){
+        regionTip.show(d);
+        d3.select(this)
+          .style("opacity", 1)
           .style("stroke","black")
-          .style('stroke-width', 0.7)
-          .on('mouseover',function(d){
-            regionTip.show(d);
-            d3.select(this)
-              .style("opacity", 1)
-              .style("stroke","black")
-              .style("stroke-width",3)
-          })
-          .on('mouseout', function(d){
-            regionTip.hide(d);
-            d3.select(this)
-              .style("opacity", 0.8)
-              .style("stroke","black")
-              .style("stroke-width",0.7)
-          })
+          .style("stroke-width",3)
+      })
+      .on('mouseout', function(d){
+        regionTip.hide(d);
+        d3.select(this)
+          .style("opacity", 0.8)
+          .style("stroke","black")
+          .style("stroke-width",0.7)
+      })
 
-          // update the barchart with corresponding province
-          .on("click", function(d){
-            updateChart(wellBeingDict, d.properties.name)
-          });
+      // update the barchart with corresponding province
+      .on("click", function(d){
+        updateChart(wellBeingDict, d.properties.name)
+      });
 
+  // placing legends on second row of the website
   var svgMapDes = d3.select("#mapdes")
       .append("svg")
       .attr("width", width)
@@ -295,59 +296,65 @@ function createMap(incomeData, nld){
       .attr("transform", "translate(20,20)");
 
   svgMapDes.select("#mapLegendGreen")
-      .call(mapLegendGreen)
+      .call(mapLegendGreen);
 
+  // add some padding for the second legend
   svgMapDes.append("g")
       .attr("id", "mapLegendOrange")
       .attr("transform", "translate(300, 20)");
 
   svgMapDes.select("#mapLegendOrange")
-      .call(mapLegendOrange)
+      .call(mapLegendOrange);
 
   function mapColoring(){
 
     // change coloring of the map when clicked on variable
     var svgDropPovRa = d3.select("#selectPovRa")
         .on("click", function(d){
-            svg.selectAll("path")
-            .attr("class", "select1")
-            .style("fill", function(d, i) {
-              for (i = 0; i < incomeData.length; i ++) {
-                if(incomeData[i]['region'] == d.properties.name) {
-                  var green = colorMapPovRa(povRaColors[i])
-                  return green
-                }
-              }})
-            });
+          svg.selectAll("path")
+          .attr("class", "select1")
+          .style("fill", function(d, i){
+
+            // finding corresponding element in dict with province
+            for (i = 0; i < incomeData.length; i ++){
+              if (incomeData[i]['region'] == d.properties.name){
+                var green = colorMapPovRa(povRaColors[i]);
+                return green;
+              }
+            }
+          })
+        });
 
     var svgDropS80s20 = d3.select("#selectS80s20")
         .on("click", function(d){
             svg.selectAll("path")
-            .style("fill", function(d, i) {
-              for (i = 0; i < incomeData.length; i ++) {
-                if(incomeData[i]['region'] == d.properties.name) {
-                  var orange = colorMap80s20(s80s20Colors[i])
-                  return orange
+            .style("fill", function(d, i){
+              for (i = 0; i < incomeData.length; i ++){
+                if (incomeData[i]['region'] == d.properties.name){
+                  var orange = colorMap80s20(s80s20Colors[i]);
+                  return orange;
                 }
               }})
             });
 
   }
+
   mapColoring()
 
 };
 
 function createChart(wellBeingDict, region = 0){
 
+  // list for labels under x-axis
   var independents = ['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'];
 
-  // remove current svg elements if another is added
+  // remove current chart if another is added by clicking on province
   if (d3.select("#chart").select("svg")){
     d3.select("#chart").select("svg").remove()
-    d3.select("#chartdes").select("svg").remove();
+    d3.select("#chartdes").select("svg").remove()
   }
 
-  // creating list with data for chart
+  // region indicates the clicked or initial province shown in chart
   var chartData = [];
 
   chartData.push(wellBeingDict[region]['unemRa'])
@@ -376,7 +383,7 @@ function createChart(wellBeingDict, region = 0){
   var xAxis = d3.axisBottom()
      .scale(xScale);
 
-  // and for y-axis
+  // ensure shown values are percentages on y-axis
   var yAxis = d3.axisLeft()
      .scale(yScale)
      .tickFormat(function(d) {return d + "%";})
@@ -391,18 +398,17 @@ function createChart(wellBeingDict, region = 0){
 
   // colorfunction with colorbrewer for those who suffer from bad eyes
   var colorBars = d3.scaleOrdinal()
-      .domain(['unemRa', 'empRa', 'eduSh', 'socSupp', 'bbAcc'])
+      .domain(independents)
       .range(colorbrewer.BrBG[5]);
 
-  // because I want to give the full names of the variables create extra function
+  // creating extra function to show full variablenames in legend
   var legendBars = d3.scaleOrdinal()
       .domain(["Unemployment rate", "Employment rate", "Share of labour force with at least secondary education",
               "Perceived social network support", "Share of households with internet broadband access"])
       .range(colorbrewer.BrBG[5]);
 
-  // creating legend for chart
+  // creating legend with colored squares
   var chartLegend = d3.legendColor()
-         .labelFormat(d3.format(".0f"))
          .shape("path", d3.symbol()
          .type(d3.symbolSquare)
          .size(700)())
@@ -502,7 +508,8 @@ function createChart(wellBeingDict, region = 0){
 
 };
 
-function updateChart(province){
+// data dict needs to be handed to the function for updating the bars
+function updateChart(wellBeingDict, province){
 
   var rightDataNumber;
 
