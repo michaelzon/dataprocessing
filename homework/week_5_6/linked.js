@@ -138,7 +138,7 @@ function getData(error, response, nld) {
     });
   }
   createMap(incomeDict, response[2])
-  createChart(wellBeingDict);
+  createChart(wellBeingDict)
 };
 
 function createMap(incomeData, nld){
@@ -176,9 +176,9 @@ function createMap(incomeData, nld){
       .range(colorbrewer.Greens[3]);
 
   // // and another coloring for s80s20 quantile ratio
-  var colorMaps80s20 = d3.scaleQuantize()
+  var colorMap80s20 = d3.scaleQuantize()
       .domain([d3.min(s80s20Colors), d3.max(s80s20Colors)])
-      .range(colorbrewer.Greens[3]);
+      .range(colorbrewer.Oranges[3]);
 
   // creating legend for map coloring
   var mapLegend = d3.legendColor()
@@ -232,29 +232,7 @@ function createMap(incomeData, nld){
               return d.properties.name;
           })
           // fill them up according to poverty rate
-          .attr("fill", function(d, i) {
-            for (i = 0; i < incomeData.length; i ++){
-              if(incomeData[i]['region'] == d.properties.name){
-                return colorMapPovRa(povRaColors[i])
-              }
-            }
-          })
-
-          // // made this function but it does not work
-          // .attr("fill", function(d, i) {
-          //   for (i = 0; i < incomeData.length; i ++){
-          //     if(incomeData[i]['region'] == d.properties.name){
-          //       $(document).ready(function(){
-          //         $("#clickPovRa").click(function(){
-          //             return colorMapPovRa(povRaColors[i])
-          //           });
-          //         $("#clicks80s20").click(function(){
-          //             return colorMaps80s20(s80s20Colors[i])
-          //           });
-          //         });
-          //       }
-          //     }
-          //   })
+          .attr("fill", "orange")
 
           // creating thick borders between provinces and even thicker when touched
           .style('stroke', 'black')
@@ -294,35 +272,48 @@ function createMap(incomeData, nld){
   svgMapDes.select(".mapLegend")
       .call(mapLegend)
 
+  function mapColoring(){
 
-    // a different attempt to the update color map function, but doesnt work either 
-    // svg.selectAll(".dropdown-menu")
-    //   .on("click", function(){
-    //     // select the option that is clicked on
-    //     var select = this.getAttribute(value);
-    //     console.log("select")
-    //     .attr("id", "region")
-    //     .attr("class", function(d, i) {
-    //       // console.log(d.properties.name)
-    //         return d.properties.name;
-    //     })
-    //
-    //     if(select == "optionOne")
-    //     // fill them up according to poverty rate
-    //     svg.attr("fill", function(d, i) {
-    //       for (i = 0; i < incomeData.length; i ++){
-    //         if(incomeData[i]['region'] == d.properties.name){
-    //           return colorMapPovRa(povRaColors[i])
-    //         }
-    //       }
-    //     })
-    //   })
+    var green
+    var orange
+    console.log(green)
+
+    // change coloring of the map when clicked on variable
+    var svgDropPovRa = d3.select("#selectPovRa")
+        .on("click", function(d){
+            svg.selectAll("path")
+            .attr("class", "select1")
+            .style("fill", function(d, i) {
+              for (i = 0; i < incomeData.length; i ++) {
+                if(incomeData[i]['region'] == d.properties.name) {
+                  green = colorMapPovRa(povRaColors[i])
+                  return green
+                }
+              }})
+            });
+
+    var svgDropS80s20 = d3.select("#selectS80s20")
+        .on("click", function(d){
+            svg.selectAll("path")
+            .style("fill", function(d, i) {
+              for (i = 0; i < incomeData.length; i ++) {
+                if(incomeData[i]['region'] == d.properties.name) {
+                  orange = colorMap80s20(s80s20Colors[i])
+                  return orange
+                }
+              }})
+            });
+
+    console.log(green)
+
+  }
+  mapColoring()
 
 };
 
 function createChart(wellBeingDict, region = 0){
 
-  // remove current svg element if another is added
+  // remove current svg elements if another is added
   if (d3.select("#chart").select("svg")){
     d3.select("#chart").select("svg").remove()
     d3.select("#chartdes").select("svg").remove();
@@ -483,7 +474,7 @@ function createChart(wellBeingDict, region = 0){
 
 };
 
-function updateChart(wellBeingDict, province){
+function updateChart(province){
 
   var rightDataNumber;
 
